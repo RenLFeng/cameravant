@@ -87,24 +87,31 @@ const ajaxUrl = {
     feedbackList:'/server/feedback/list',//查询某个用户的反馈信息列表
     feedbackAdd:'/server/feedback/add',//添加反馈接口
     feedbackDelete:'/server/feedback/delete',//删除反馈信息
+
     wechatBind:'/server/wechat/bind',//用户绑定设备
     wechatDevice:'/server/wechat/device',//微信用户获取设备列表
     wechatUnbind:'/server/wechat/unbind',//用户解绑设备
     wechatEditDevice:'/server/wechat/edit_device',//用户解绑设备
     statiComparestat:'/server/stati/comparestat',//对比统计
     getCode:'/server/wechat/code',//通过code获取用户openID
+
     userBinduser:'/server/user/binduser',//分享绑定用户
     userSharecode:'/server/user/sharecode',//获取用户的账户授权码
-    aiPiclist:'/server/ai/piclist',//获取图片列表
     userApplyCode:'/server/user/applyCode',//发送验证码
     userVerifyCode:'/server/user/verifyCode',//校验验证码
+    userWebauth:'/server/user/webauth',//账户密码授权    
+
+    aiPiclist:'/server/ai/piclist',//获取图片列表
     aiAdduser:'/server/ai/adduser',//给设备组添加用户
     aiUsertype:'/server/ai/usertype',//获取用户类型
     owntype:'/server/ai/owntype',//根据用户openid获取用户类型
-    userWebauth:'/server/user/webauth',//账户密码授权    
     aiUserlist:'/server/ai/userlist',//获取用户列表
     aiDeleuser:'/server/ai/deleuser',//删除用户
     aiUpdateuser:'/server/ai/updateuser',//更新用户
+
+    analysisDay:'/server/analysis/day',//考勤分析
+    analysisTime:'/server/analysis/times',//今日活跃度
+    analysisUser:'/server/analysis/user',//考勤时间
 }
 // 返回模块
 export default ajaxUrl;

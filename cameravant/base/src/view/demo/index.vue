@@ -54,7 +54,23 @@
     <empty class="grey" v-if="!imgstatPerhourShow">
       <span>分时客流量分析暂无数据</span>
     </empty>
-    <van-swipe :autoplay="3000" class="swipe" v-if="imgListShow">
+     <van-swipe :autoplay="3000" class="swipe" v-if="imgListShow">
+      <van-swipe-item :key="index" v-for="(image, index) in imgList">
+        <div class="img_container">
+          <img :src="imgList[0].imgMd5+'?w=400&h=400'" class="img" />
+          <p class="note">{{imgList[0].imgSex?'男':'女'}}　{{imgList[0].imgAge}}<br>{{imgList[0].imgDatetime.replace(/(\S)*\s/,"")}}</p>
+        </div>
+        <div class="img_container">
+          <img :src="imgList[1].imgMd5+'?w=400&h=400'" class="img" />
+          <p class="note">{{imgList[1].imgSex?'男':'女'}}　{{imgList[1].imgAge}}<br>{{imgList[1].imgDatetime.replace(/(\S)*\s/,"")}}</p>
+        </div>
+        <div class="img_container">
+          <img :src="imgList[2].imgMd5+'?w=400&h=400'" class="img" />
+          <p class="note">{{imgList[2].imgSex?'男':'女'}}　{{imgList[2].imgAge}}<br>{{imgList[2].imgDatetime.replace(/(\S)*\s/,"")}}</p>
+        </div>
+      </van-swipe-item>
+    </van-swipe>
+    <!-- <van-swipe :autoplay="3000" class="swipe" v-if="imgListShow">
       <van-swipe-item :key="index" v-for="(image, index) in imgList" v-if="index===0">
         <div class="img_container">
           <img :src="imgList[0].imgMd5+'?w=400&h=400'" class="img" />
@@ -97,7 +113,7 @@
           <p class="note">{{imgList[8].imgSex?'男':'女'}}　{{imgList[8].imgAge}}<br>{{imgList[8].imgDatetime.replace(/(\S)*\s/,"")}}</p>
         </div>
       </van-swipe-item>
-    </van-swipe>
+    </van-swipe> -->
     <empty class="grey" v-else>
       <span>暂无图片数据</span>
     </empty>
@@ -411,6 +427,7 @@
             // console.log(res);
             const resData = res.content;
             that.imgList = resData || [];
+           
             if(that.imgList.length==9){
               that.imgListShow = true;
             }else{

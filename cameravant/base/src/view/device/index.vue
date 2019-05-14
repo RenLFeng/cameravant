@@ -414,7 +414,11 @@
           if (res.result == "true" && Object.keys(res.content).length != 0) {
             const resData = res.content;
             that.imgList = resData || [];
-            that.imgListShow = true;
+            if(that.imgList.length==9){
+              that.imgListShow = true;
+            }else{
+               that.imgListShow = false;
+            }
           } else {
             that.imgListShow = false;
           }

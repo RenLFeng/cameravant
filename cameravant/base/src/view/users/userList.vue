@@ -13,10 +13,11 @@
                                 <img :src="item.user_pic+'?w=264&h=264'" alt="">
                             </div>
                             <div class="middle">
-                                <span class="name ellipsis">{{item.user_name}}　{{item.user_type}}</span>
-                                <span class="time ellipsis">{{item.user_phone}}</span>
+                                <span class="name ellipsis">{{item.user_name}}　</span>
+                                <span style="color:#6C7B8A">{{item.user_type}}</span>
+                                <span style="color:#999" class="time ellipsis">{{item.user_phone}}</span>
                             </div>
-                            <span class="iconfont icon-xiugai"></span>
+                            <span style="font-size:24px;" class="iconfont icon-records"><van-icon name="records" /></span>
                         </li>
                     </ul>
                     <empty v-else>
@@ -39,6 +40,7 @@
     import userEdit from '@/view/users/userEdit'
 
     import {
+        Icon ,
         Popup,
         Button,
         Field,
@@ -55,6 +57,7 @@
             [Dialog.name]: Dialog,
             [Tab.name]: Tab,
             [Tabs.name]: Tabs,
+             [Icon.name]: Icon,
         },
         name: 'myFeedback',
         data() {
@@ -172,6 +175,7 @@
                 }).then(res => {
                     if (res.result === 'true') {
                         this.userTypes = res.content;
+                        // this.userTypes=this.userTypes.splice(1);
                         this.getUserList(openId,res.content[0].id);
                     } else {
                         this.$toast(res.msg);
@@ -261,7 +265,7 @@
         height: 100vh;
         overflow: scroll;
         -webkit-overflow-scrolling: touch;
-        background-color: #eee;
+        background-color: #fff;
         padding-bottom: 10px;
         .ul_container {
             height: calc(~'100vh - 46px');
@@ -366,4 +370,29 @@
             }
         }
     }
+</style>
+<style>
+.van-tabs__content{
+    margin-top: 10px;
+}
+.van-tabs__wrap{
+    /* padding: 10px 0; */
+    padding-top:10px;
+}
+.van-tab--active {
+    background: -webkit-linear-gradient(135deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
+    background: linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
+    color: #fff;
+    border-radius: 0.8rem;
+    width: 50%;
+    height: 80%;
+    margin: 0 auto;
+    line-height: 35px;
+}
+.van-tabs__line{
+            display: none;
+        }
+.feedback .feedback_list li .left img[data-v-487cc491]{
+    border-radius: 10px;
+}
 </style>

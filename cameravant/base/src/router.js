@@ -75,7 +75,7 @@ const routes = [
     name: 'shareAccount',
     component: () => import('./view/device/shareAccount'),
     meta: {
-      title: '共享授权'
+      title: '账号共享'
     }
   },
   {
@@ -131,7 +131,15 @@ const routes = [
     name: 'checkWork',
     component: () => import('./view/checkwork'),
     meta: {
-      title: '考情分析'
+      title: '考勤分析'
+    }
+  },
+  {
+    path: '/sqList',
+    name: 'sqList',
+    component: () => import('./view/users/sqlist'),
+    meta: {
+      title: '授权列表'
     }
   },
 ];

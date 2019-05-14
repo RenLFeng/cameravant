@@ -1,16 +1,14 @@
 <template>
     <div class="feedback" v-if="Object.keys(deviceList).length>0">
-        <van-tabs v-model="tabDeviceSelected" color="#0091fa" style="padding:10px 20px;">
-            <van-tab title="我的设备" class="">
-                <ul class="feedback_list">
+          <ul class="feedback_list">
                     <!-- <li class="flex" v-for="(item,index) in myDevices" v-swipeleft="{fn:deleteDevice,item:item}" :class="item.canDelete?'translate':''"
                         :key="index"> -->
                     <li class="flex" v-for="(item,index) in myDevices" :class="item.canDelete?'translate':''"
                         :key="index">
                        
                         <div class="left">
-                             <p> 设备名称</p>
-                            <span class="name ellipsis" @click="setEditItem(item)">{{item.device_inst_addr}}</span>
+                             <p class="user-title"> 张三 <van-tag round type="primary">{{item.six?'男':'女'}}</van-tag></p>
+                            <span class="name ellipsis">{{item.device_inst_addr}}</span>
                             <!-- <span class="time ellipsis">{{item.device_code}}</span> -->
                         </div>
                         <div class="middle">
@@ -21,28 +19,6 @@
                         <!-- <span class="iconfont icon-shanchu" @click="deleteDevice(item)"></span> -->
                     </li>
                 </ul>
-            </van-tab>
-            <van-tab title="被分享的设备">
-                <ul class="feedback_list">
-                    <!-- <li class="flex" v-for="(item,index) in otherDevices" v-swipeleft="{fn:deleteDevice,item:item}" :class="item.canDelete?'translate':''"
-                        :key="index"> -->
-                    <li class="flex" v-for="(item,index) in otherDevices" :class="item.canDelete?'translate':''"
-                        :key="index">
-                        <div class="left">
-                              <p> 设备名称</p>
-                            <span  class="name ellipsis">{{item.device_inst_addr}}</span>
-                            <!-- <span class="time ellipsis">{{item.device_code}}</span> -->
-                        </div>
-                        <div class="middle">
-                            <!-- <span class="name ellipsis">{{item.devicetype_name}}</span> -->
-                            <span class="time">{{item.device_addtime}}</span>
-                        </div>
-                        <!-- <span class="iconfont icon-chakan"></span> -->
-                        <!-- <span class="iconfont icon-shanchu" @click="deleteDevice(item)"></span> -->
-                    </li>
-                </ul>
-            </van-tab>
-        </van-tabs>
         <!-- <ul class="feedback_list">
             <li class="flex" v-for="(item,index) in myDevices" @click="setEditItem(item)" v-swipeleft="{fn:deleteDevice,item:item}" :class="item.canDelete?'translate':''"
                 :key="index" v-if="!tabDeviceSelected">
@@ -93,7 +69,7 @@
         Button,
         Field,
         Dialog,
-        Tab, Tabs,
+        Tab, Tabs,Tag,
     } from 'vant';
     export default {
         components: {
@@ -104,6 +80,7 @@
             [Dialog.name]: Dialog,
             [Tab.name]: Tab,
             [Tabs.name]: Tabs,
+             [Tag.name]: Tag,
         },
         name: 'myFeedback',
         data() {
@@ -339,6 +316,21 @@
         -webkit-overflow-scrolling: touch;
         background-color: #fff;
         padding-bottom: 10px;
+        .user-title{
+            margin-bottom: 0;
+            padding: 5px;
+            font-size: 18px;
+            .user-six{
+                display: inline-block;
+              width:26px;
+                height:26px;
+                background:rgba(34,206,212,1);
+                color:#fff;
+                border-radius: 16px;
+                text-align: center;
+                font-size: 12px;
+            }
+        }
         .feedback_list {
             li {
                 justify-content: space-between;
@@ -452,6 +444,9 @@
     
 </style>
 <style>
+.feedback .feedback_list li .left[data-v-f4fd47f8]{
+    width: auto;
+}
 .feedback .feedback_list li[data-v-fcebbbc8]{
     line-height: 13px;
 }

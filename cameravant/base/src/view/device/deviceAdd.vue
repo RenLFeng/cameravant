@@ -6,11 +6,13 @@
             扫描设备
         </div>
         <div class="type flex">
-            <van-field v-model="deviceCode" label="设备编码" placeholder="或选择手动输入设备编码" size="large" required />
-            <van-field v-model="deviceName" label="设备名称" placeholder="请输入设备名称" size="large" required />
+            <p class="label-name">设备编码</p>
+            <van-field v-model="deviceCode"  placeholder="或选择手动输入设备编码" size="large" required />
+             <p class="label-name">设备名称</p>
+            <van-field v-model="deviceName"  placeholder="请输入设备名称" size="large" required />
         </div>
         <div class="btn_container">
-            <van-button type="info" size="large" @click="deviceAdd" class="btn">添加</van-button>
+            <van-button  size="large" @click="deviceAdd" class="btn">添加设备</van-button>
         </div>
         <!-- <van-popup v-model="popEdit" class="pop_edit">
             <div class="pop_container">
@@ -229,13 +231,24 @@
         height: 100vh;
         overflow: scroll;
         -webkit-overflow-scrolling: touch;
-        background-color: #eee;
+        background-color: #fff;
         padding-bottom: 10px;
+        .van-cell--required::before{
+            display: none;
+        }
+            .label-name{
+                    padding: 12px 15px;
+                    width: 100%;
+                    font-size: 16px;
+                    margin-bottom:0;
+            }
         .scan {
             width: 140px;
             height: 140px;
             margin: 40px auto 30px;
-            background: rgba(25, 137, 250, 0.6);
+            background:url(../../assets/qrcode_backg.png) no-repeat;
+            background-position: 50% 50%;
+            background-size: 100% 100%;
             border-radius: 50%;
             font-size: 14px;
             font-weight: bold;
@@ -304,6 +317,11 @@
             .type {
                 margin: 10px 0 0;
             }
+        }
+        .van-button{
+            border-radius: 8px;
+            background: #5A7BEF;
+            color:#fff;
         }
     }
 </style>

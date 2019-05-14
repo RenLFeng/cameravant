@@ -129,16 +129,20 @@ export default {
         //appid
         let id = that.getVueUrlParam('appid');
         if (id) {
+          // alert('1===getVueUrlParam()获取appid===setsessionStorage'+id)
           window.sessionStorage.setItem('appid', id);
         }
         let appid = window.sessionStorage.getItem('appid');
         if (!appid || appid === 'null') {
+          // alert('get ===setsessionStorage'+appid)
           return;
         } else {
           const openid = that.getVueUrlParam('openid') || window.sessionStorage.getItem('openid') || '';
           if(!openid || openid === 'null'){
+            // alert('get===Param() || Storage'+openid)
             const code = that.getUrlParam('code');
             if (!code || code === 'undefined') {
+              // alert('getUrlParam("code")'+code)
               window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri=' + encodeURIComponent(local) + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect';
             } else {
               that.axios.post(this.api.getCode+'?code='+code,{

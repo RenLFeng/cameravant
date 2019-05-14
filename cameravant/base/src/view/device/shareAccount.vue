@@ -6,11 +6,12 @@
             扫描二维码
         </div>
         <div class="type flex">
-            <van-field v-model="deviceCode" label="二维码信息" placeholder="扫描后自动获取" size="large" required readonly @click="wxScan" />
+             <p class="label-name">二维码信息</p>
+            <van-field v-model="deviceCode" placeholder="扫描后自动获取" size="large" required readonly @click="wxScan" />
             <!-- <van-field v-model="deviceCode" label="二维码信息" placeholder="扫描后自动获取" size="large" required @click="wxScan" /> -->
         </div>
         <div class="btn_container">
-            <van-button type="info" size="large" @click="shareAccount" class="btn">共享</van-button>
+            <van-button type="info" size="large" @click="shareAccount" class="btn">添加设备</van-button>
         </div>
     </div>
 </template>
@@ -168,13 +169,15 @@
         height: 100vh;
         overflow: scroll;
         -webkit-overflow-scrolling: touch;
-        background-color: #eee;
+        background-color: #fff;
         padding-bottom: 10px;
         .scan {
             width: 140px;
             height: 140px;
             margin: 40px auto 30px;
-            background: rgba(25, 137, 250, 0.6);
+              background:url(../../assets/qrcode_backg.png) no-repeat;
+            background-position: 50% 50%;
+            background-size: 100% 100%;
             border-radius: 50%;
             font-size: 14px;
             font-weight: bold;
@@ -244,5 +247,15 @@
                 margin: 10px 0 0;
             }
         }
+     .van-cell--required::before{
+            display: none;
+        }
+            .label-name{
+                    padding: 12px 15px;
+                    width: 100%;
+                    font-size: 16px;
+                    margin-bottom:0;
+            }
     }
+ 
 </style>

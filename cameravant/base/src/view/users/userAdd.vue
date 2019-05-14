@@ -6,7 +6,7 @@
             </div>
             <div class="type flex">
                 <van-field v-model="userType.userType" placeholder="请选择用户类型" size="large" required readonly @click="selectUserType"
-                />
+/>
                 <van-field v-model="userName" placeholder="请输入姓名" size="large" required />
                 <van-field v-model="phone" placeholder="请输入手机号码" size="large" />
             </div>
@@ -17,7 +17,7 @@
         <van-popup v-model="picListPop" position="right" class="whole_pop">
             <picList :childOpenid="openid" @receivePicInfo="showPic"></picList>
         </van-popup>
-        <van-popup v-model="userTypeSelectPop" class="pop_p100" position="bottom">
+        <van-popup v-model="userTypeSelectPop" class="pop_p100 top_nav" position="bottom">
             <van-picker show-toolbar title="" :columns="userTypes" value-key="userType" :default-index="0" @cancel="userTypeSelectCancel"
                 @confirm="userTypeSelectConfirm" />
         </van-popup>
@@ -27,6 +27,7 @@
 <script>
     import picList from '@/view/common/picList';
     import {
+        Icon,
         Popup,
         Button,
         Field,
@@ -36,6 +37,7 @@
     export default {
         components: {
             picList,
+            [Icon.name]:Icon,
             [Popup.name]: Popup,
             [Button.name]: Button,
             [Field.name]: Field,
@@ -239,7 +241,7 @@
     .feedback {
         height: 100vh;
         overflow: hidden;
-        background-color: #eee;
+        background-color: #fff;
         padding-bottom: 10px;
         .field {
             padding: 0 16px;
@@ -260,6 +262,7 @@
                 img {
                     width: 100%;
                     height: 100%;
+                    border-radius: 15px;
                 }
                 .iconfont {
                     display: block;
@@ -285,5 +288,24 @@
         .pop_p100 {
             width: 100%;
         }
+        .top_nav {
+            top: 45px;
+            width: 55%;
+            height:260px;
+            transform: none;
+              transform: translate3d(-10%, 20px, 11px);
+            box-shadow:2px 2px 18px rgba(0,0,0,0.3);
+        }
+        .van-button--info{
+            background:rgba(90,122,239,1);
+            border-radius:15px;
+        }
+    
     }
+</style>
+<style>
+.van-cell--large{
+            background: #F5F7F9;
+            margin-top: 10px;
+        }
 </style>

@@ -4,7 +4,7 @@
   "description": "Collection of vant demos.",
   "license": "MIT",
   "scripts": {
-    "dev": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --host 172.28.3.85",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },

@@ -20,7 +20,7 @@
         <van-popup v-model="picListPop" position="right" class="whole_pop">
             <picList :childOpenid="openid" @receivePicInfo="showPic"></picList>
         </van-popup>
-        <van-popup v-model="userTypeSelectPop" class="pop_p100" position="bottom">
+        <van-popup v-model="userTypeSelectPop"   class="pop_p100 top_nav" position="top">
             <van-picker show-toolbar title="" :columns="userTypes" value-key="userType" :default-index="0" @cancel="userTypeSelectCancel"
                 @confirm="userTypeSelectConfirm" />
         </van-popup>
@@ -247,5 +247,21 @@
         .pop_p100 {
             width: 100%;
         }
+         .top_nav {
+            top: 45px;
+            width: 55%;
+            transform: none;
+              transform: translate3d(-10%, 20px, 11px);
+            box-shadow:2px 2px 18px rgba(0,0,0,0.3);
+        }
     }
+</style>
+<style>
+.van-cell {
+    background: #F5F7F9;
+    margin-top: 6px;
+}
+.feedback .field .scan img[data-v-57c4ebfd]{
+    border-radius: 15px;
+}
 </style>
