@@ -2,7 +2,7 @@
   <div class="device">
     <div :class="{'device_wrap':1,'act':showDeviceList}" v-show="showDeviceList">
       <ul>
-        <li @click="selectTypeFn(item,index)" :class="item.child?'child':item.tit?'device_tit':index==0?'all_device_my':index==4?'all_device_enjoy':''" v-for="(item,index) in devicetypes" :key="index"><span :class="{'act':item.isAct,'cir_small':item.device} "></span>{{item.device}}</li>
+        <li @click="selectTypeFn(item,index)" :class="item.child?'child':item.tit?'device_tit':index==0?'all_device_my':index==4?'all_device_enjoy':''" v-for="(item,index) in MydevicetypeList" :key="index"><span :class="{'act':item.isAct,'cir_small':item.device} "></span>{{item.device_inst_addr}}</li>
       </ul>
     </div>
     <topNav>
@@ -331,7 +331,8 @@ let dat2={
                 }
           ]
          }, 
-      devicetypes:[],
+        MydevicetypeList:[],
+       EjdevicetypeList:[],
 
 
         agePie: null,
@@ -605,6 +606,11 @@ let dat2={
           data
         }).then(res => {
           if (res.result === "true") {
+
+            this.MydevicetypeList=res.content[0].devices
+            this.EjdevicetypeList=res.content[1].devices
+
+
             this.deviceList = res.content;
             this.deviceIds = res.content[0].deviceIds;
             this.getPageData(this.deviceIds);
