@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback">
+    <div class="feedback user_list">
         <van-tabs v-model="tabUserTypeSelected" color="#0091fa" @change="tabChange" v-if="Object.keys(userTypes).length>0">
             <van-tab v-for="(item,index) in userTypes" :title="item.userType">
                 <div class="ul_container">
@@ -79,6 +79,7 @@
                 loading: false, //为true时不会触发加载更多，false可以触发
                 current: 1,
                 size:10,
+                index:1
             }
         },
         created() {
@@ -236,8 +237,16 @@
                 });
             },
             edit(item) {
+                console.log(item);
                 this.editItem = item;
                 this.popEdit = true;
+                 this.$router.push({
+                    name: '',
+                    query: {
+                        count:this.index++,
+                        openid: window.sessionStorage.getItem('openid') || this.$route.query['openid'],
+                    }
+                })
             },
             listUpdate() {
                 this.popEdit = false;
@@ -372,14 +381,17 @@
     }
 </style>
 <style>
-.van-tabs__content{
+.user_list .feedback .feedback_list[data-v-487cc491]{
+    padding-top: 0;
+}
+.user_list .van-tabs__content{
     margin-top: 10px;
 }
-.van-tabs__wrap{
+.user_list .van-tabs__wrap{
     /* padding: 10px 0; */
-    padding-top:10px;
+    padding:10px 5px 0;
 }
-.van-tab--active {
+.user_list .van-tab--active {
     background: -webkit-linear-gradient(135deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
     background: linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
     color: #fff;
@@ -389,10 +401,11 @@
     margin: 0 auto;
     line-height: 35px;
 }
-.van-tabs__line{
+.user_list .van-tabs__line{
             display: none;
         }
-.feedback .feedback_list li .left img[data-v-487cc491]{
+.user_list .feedback_list li .left img[data-v-487cc491]{
     border-radius: 10px;
+        vertical-align: middle;
 }
 </style>

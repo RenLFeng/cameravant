@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback" v-if="Object.keys(deviceList).length>0">
+    <div class="feedback device_list" v-if="Object.keys(deviceList).length>0">
         <van-tabs v-model="tabDeviceSelected" color="#0091fa" style="padding:10px 20px;">
             <van-tab title="我的设备" class="">
                 <ul class="feedback_list">
@@ -17,12 +17,12 @@
                             <!-- <span class="name ellipsis">{{item.devicetype_name}}</span> -->
                             <span class="time">{{item.device_addtime}}</span>
                         </div>
-                        <!-- <span class="iconfont icon-chakan"></span> -->
+                        <span class="iconfont icon-chakan"></span>
                         <!-- <span class="iconfont icon-shanchu" @click="deleteDevice(item)"></span> -->
                     </li>
                 </ul>
             </van-tab>
-            <van-tab title="被分享的设备">
+            <van-tab title="共享设备">
                 <ul class="feedback_list">
                     <!-- <li class="flex" v-for="(item,index) in otherDevices" v-swipeleft="{fn:deleteDevice,item:item}" :class="item.canDelete?'translate':''"
                         :key="index"> -->
@@ -452,22 +452,22 @@
     
 </style>
 <style>
-.feedback .feedback_list li[data-v-fcebbbc8]{
+.device_list .feedback_list li[data-v-fcebbbc8]{
     line-height: 13px;
 }
-.van-tabs__content{
+.device_list .van-tabs__content{
     margin-top: 50px;
 }
-.van-tabs__wrap {
+.device_list .van-tabs__wrap {
     padding: 10px 20px;
 }
            span.name,span.time{
             color:#6C7B8A !important;
         }
-.feedback  .van-tabs__line{
+.device_list .van-tabs__line{
             display: none;
         }
-        .van-tab--active{
+ .device_list .van-tab--active{
             background: linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
             color: #fff;
             border-radius: 30px;

@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback" v-if="Object.keys(deviceList).length>0">
+    <div class="feedback sq_list" v-if="Object.keys(deviceList).length>0">
           <ul class="feedback_list">
                     <!-- <li class="flex" v-for="(item,index) in myDevices" v-swipeleft="{fn:deleteDevice,item:item}" :class="item.canDelete?'translate':''"
                         :key="index"> -->
@@ -7,57 +7,22 @@
                         :key="index">
                        
                         <div class="left">
-                             <p class="user-title"> 张三 <van-tag round type="primary">{{item.six?'男':'女'}}</van-tag></p>
+                             <p class="user-title"> 张三 <van-tag round :class="item.user_sex?'man':'girl'">{{item.user_sex?'男':'女'}}</van-tag></p>
                             <span class="name ellipsis">{{item.device_inst_addr}}</span>
-                            <!-- <span class="time ellipsis">{{item.device_code}}</span> -->
+                            <!-- <span class="time ellipsis">{{item.device_code}}</span>  active: item.user_sex, 'girl': item.user_sex  -->
                         </div>
                         <div class="middle">
                             <!-- <span class="name ellipsis">{{item.devicetype_name}}</span> -->
-                            <span class="time">{{item.device_addtime}}</span>
+                            <span class="time">{{item.device_addtime}} <i @click="claerBindFn(item,index)" class="jiebang"></i></span>
                         </div>
                         <!-- <span class="iconfont icon-chakan"></span> -->
                         <!-- <span class="iconfont icon-shanchu" @click="deleteDevice(item)"></span> -->
                     </li>
-                </ul>
-        <!-- <ul class="feedback_list">
-            <li class="flex" v-for="(item,index) in myDevices" @click="setEditItem(item)" v-swipeleft="{fn:deleteDevice,item:item}" :class="item.canDelete?'translate':''"
-                :key="index" v-if="!tabDeviceSelected">
-                <div class="left">
-                    <span class="name ellipsis">{{item.device_inst_addr}}</span>
-                    <span class="time ellipsis">{{item.device_code}}</span>
-                </div>
-                <div class="middle">
-                    <span class="name ellipsis">{{item.devicetype_name}}</span>
-                    <span class="time">{{item.device_addtime}}</span>
-                </div>
-                <span class="iconfont icon-chakan"></span>
-            </li>
-            <li class="flex" v-for="(item,index) in otherDevices" :key="'1'+index" v-else>
-                <div class="left">
-                    <span class="name ellipsis">111{{item.device_inst_addr}}</span>
-                    <span class="time ellipsis">{{item.device_code}}</span>
-                </div>
-                <div class="middle">
-                    <span class="name ellipsis">{{item.devicetype_name}}</span>
-                    <span class="time">{{item.device_addtime}}</span>
-                </div>
-                <span class="iconfont icon-chakan"></span>
-            </li>
-        </ul> -->
-        <van-popup v-model="popEdit" class="pop_edit" :modal="false" v-if="Object.keys(editItem).length>0">
-            <div class="pop_container">
-                <div class="type flex">
-                    <van-field v-model="editItem.device_inst_addr" label="设备名称" placeholder="请输入设备名称" size="large" required />
-                </div>
-                <van-button type="default" size="large" @click="submit" class="btn">提交</van-button>
-            </div>
-        </van-popup>
-        <!-- <div class="add_device" @click="goDeviceAdd">
-            <span class="iconfont icon-tianjiashebei"></span>添加设备
-        </div> -->
+            </ul>
     </div>
     <empty v-else>
-        <span>暂无设备，先去<span class="blue" @click="goDeviceAdd">添加设备</span>吧~</span>
+        <!-- <span>暂无授权用户，先去<span class="blue" @click="goDeviceAdd">添加设备</span>吧~</span> -->
+             <span>暂无授权用户...</span>
     </empty>
 </template>
 
@@ -85,6 +50,7 @@
         name: 'myFeedback',
         data() {
             return {
+                color:'#FC41B3',
                 appid: window.sessionStorage.getItem('appid'),
                 openid: window.sessionStorage.getItem('openid') || this.$route.query['openid'],
                 value: true,
@@ -132,6 +98,7 @@
         mounted() {
         },
         methods: {
+            //get 授权用户列表
             getDeviceList(openid) {
                 const that = this;
                 let data = {};
@@ -291,6 +258,20 @@
                     this.getDeviceList(resolve);
                 });
             },
+            //解绑授权用户列表
+            claerBindFn(item,index){
+                   Dialog.confirm({
+                    title: '解除授权',
+                    message: '您确认解除该授权用户吗？',
+                    // beforeClose
+                }).then(()=>{
+                    console.log(item);
+                    this.myDevices.splice(index,1);
+                }).catch(() => {
+                    alert('cancle');
+                    // on cancel
+                });
+            }
         },
         computed: {
         }
@@ -318,17 +299,13 @@
         padding-bottom: 10px;
         .user-title{
             margin-bottom: 0;
-            padding: 5px;
+            padding: 5px 0;
             font-size: 18px;
-            .user-six{
-                display: inline-block;
-              width:26px;
-                height:26px;
-                background:rgba(34,206,212,1);
-                color:#fff;
-                border-radius: 16px;
-                text-align: center;
-                font-size: 12px;
+            .man{
+                background: #22CED4 !important;
+            }
+            .girl{
+                background:#FC41B3 !important;
             }
         }
         .feedback_list {
@@ -351,9 +328,20 @@
                 .left,
                 .middle {
                     &>span {
+                        position: relative;
                         display: block;
                         width: 100%;
                         text-align: left;
+                        .jiebang{
+                            position: absolute;
+                            width: 30px;
+                            height: 30px;
+                            background: url(../../assets/jiebang.png) no-repeat ;
+                            background-size: 100%;
+                            background-position: 50% 50%;                             
+                            right: 0;
+                            top: -2px;
+                        }
                     }
                     .name {}
                 }
@@ -444,25 +432,25 @@
     
 </style>
 <style>
-.feedback .feedback_list li .left[data-v-f4fd47f8]{
+.sq_list .feedback_list li .left[data-v-f4fd47f8]{
     width: auto;
 }
-.feedback .feedback_list li[data-v-fcebbbc8]{
+.sq_list .feedback_list li[data-v-fcebbbc8]{
     line-height: 13px;
 }
-.van-tabs__content{
+.sq_list .van-tabs__content{
     margin-top: 50px;
 }
-.van-tabs__wrap {
+.sq_list .van-tabs__wrap {
     padding: 10px 20px;
 }
            span.name,span.time{
             color:#6C7B8A !important;
         }
-.feedback  .van-tabs__line{
+.sq_list .van-tabs__line{
             display: none;
         }
-        .van-tab--active{
+ .sq_list .van-tab--active{
             background: linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
             color: #fff;
             border-radius: 30px;

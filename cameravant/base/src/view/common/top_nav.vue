@@ -9,6 +9,7 @@
         </div>
         <van-popup v-model="topNavShow" position="top" class="top_nav">
             <van-cell title="共享授权" is-link to="shareAccount" />
+             <van-cell title="授权列表" is-link to="sqList" />
             <van-cell title="用户添加" is-link to="userAdd" />
             <van-cell title="用户列表" is-link to="userList" />
             <van-cell title="PC访问授权" is-link to="userAuth" />
@@ -95,6 +96,7 @@
             width: 55%;
             transform: translate3d(0%, 0, 0);
             box-shadow:2px 2px 18px rgba(0,0,0,0.3);
+             border-radius: 15px;
         }
         .van-overlay{
             background-color:rgba(0,0,0,0);

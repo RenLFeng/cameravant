@@ -1,22 +1,70 @@
 <template>
   <div class="device">
+    <div :class="{'device_wrap':1,'act':showDeviceList}" v-show="showDeviceList">
+      <ul>
+        <li @click="selectTypeFn(item,index)" :class="item.child?'child':item.tit?'device_tit':index==0?'all_device_my':index==4?'all_device_enjoy':''" v-for="(item,index) in devicetypes" :key="index"><span :class="{'act':item.isAct,'cir_small':item.device} "></span>{{item.device}}</li>
+      </ul>
+    </div>
     <topNav>
-      <!-- <van-search placeholder="请输入设备名称" v-model="deviceSearchString" shape="round" @search="onSearch" /> -->
-      <!-- <van-field v-model="deviceSearchString" placeholder="请选择设备名称" @click='deviceSelectPop=true' readonly :value="selectedDevice.device_inst_addr?selectedDevice.device_inst_addr:'全部'"
-        /> -->
-      <van-tabs v-model="tabDeviceSelected" color="#0091fa" @click="deviceSelectedChange">
+      <!-- <van-tabs v-model="tabDeviceSelected" color="#0091fa" @click="deviceSelectedChange">
         <van-tab v-for="item in tabDeviceType" :title="item.text">
         </van-tab>
-      </van-tabs>
+      </van-tabs> -->
+      <p class="all_device_init" @click="showDeviceListFn()">全部设备<i class="delta"></i></p>
     </topNav>
     <!-- <div class="input_container flex" @click='deviceSelectPop=true'><span class="input_label">设备名称：</span><span class="input_shape">{{selectedDevice.device_inst_addr?selectedDevice.device_inst_addr:'全部'}}</span>
       </div> -->
     <!-- <div class="input_container flex" @click='timeTypeSelectPop=true'><span class="input_label">时间选择：</span><span class="input_shape">{{timetype.value==='4'?selectedDateTime[0]+'至'+selectedDateTime[1]:timetype.text}}</span>
       </div> -->
     <van-tabs v-model="tabRangeTypeSelected" type="card" color="#0091fa" @change="timeTypeSelectConfirm">
-      <van-tab v-for="item in rangeTypes" :title="item.text">
+      <van-tab v-for="(item,index) in rangeTypes" :title="item.text" :key="index">
       </van-tab>
     </van-tabs>
+    <!-- 性别区分 -->
+    <div class="circle_box">
+      <ul class="sex_contect">
+         <li :class="index==1?'margin_top':''" v-for="(item,index) in circleData.sexs" :key="index">
+         <van-circle
+        v-model="item['currentRateSex'+index]"
+        :color="item.sex?'#22CED4':'#FD3FB2'"
+        fill="#fff"
+        :rate="item.rate"
+        size="60px"
+        layer-color="#E0E4EB"
+        :speed="100"
+        :stroke-width="80"
+       :text="item['currentRateSex'+index].toFixed(0) + '%'"
+      /><span>{{item.sex?'男':'女'}}</span>
+      </li>
+  </ul>
+<!-- 年龄区分 -->
+      <ul class="age_content">
+          <li :class="index>2?'margin_top':''" v-for="(item,index) in circleData.ages" :key="index">
+         <van-circle
+       v-model="item['currentRateAge'+index]"
+        :color="index==0?'#4049EF':index==1?'#FB8C87':index==2?'#414AEF':index==3?'#15D2B9':index==4?'#685CFF':index==5?'#FF9E76':index==6?'':''"
+        fill="#fff"
+        :rate="item.rate"
+        size="60px"
+        layer-color="#E0E4EB"
+        :speed="100"
+        :stroke-width="80"
+       :text="item['currentRateAge'+index].toFixed(0) + '%'"
+      /><span>{{item.age}}</span> 
+    </li> 
+      </ul>
+    </div>
+     <div class="itme-box device_chart">
+      <p class="tit">
+        <i class="i"></i>客流量分析曲线
+      </p>
+      <canvas  id="myChart" width height="255px"></canvas>
+      <span class="not-data" v-if="drw1Data==''">暂无数据...</span>
+    </div>
+ <!-- <button @click="click">click</button> 
+<button @click="click2">click2</button>  -->
+
+
     <van-popup v-model="deviceSelectPop" class="pop_p100" position="bottom">
       <van-picker show-toolbar title="" :columns="deviceSeletedList" value-key="device_inst_addr" :default-index="0" @cancel="deviceSelectCancel"
         @confirm="deviceSelectConfirm" />
@@ -114,7 +162,104 @@
 </template>
 
 <script>
+// const format = rate => Math.min(Math.max(rate, 0), 100);
+let dat={
+   sexs:[
+                {
+                  currentRateSex0:0,
+                  rate:10,
+                  sex:1
+                },
+                 {
+                  currentRateSex1:0,
+                  rate:20,
+                  sex:0
+                }
+           ],
+          ages:[
+                {
+                    currentRateAge0:0,
+                  rate:0,
+                  age:'17-39'
+                },
+                 {
+                     currentRateAge1:0,
+                  rate:70,
+                  age:'17-39'
+                },
+                 {
+                     currentRateAge2:0,
+                  rate:70,
+                  age:'17-39'
+                },
+                 {
+                     currentRateAge3:0,
+                  rate:30,
+                  age:'17-39'
+                },
+                
+                 {
+                     currentRateAge4:0,
+                  rate:50,
+                   age:'17-39'
+                },
+                 {
+                     currentRateAge5:0,
+                  rate:90,
+                  age:'17-39'
+                }
+          ]
+}
+let dat2={
+   sexs:[
+                {
+                  currentRateSex0:0,
+                  rate:30,
+                  sex:1
+                },
+                 {
+                  currentRateSex1:0,
+                  rate:40,
+                  sex:0
+                }
+           ],
+          ages:[
+                {
+                    currentRateAge0:0,
+                  rate:80,
+                  age:'17-39'
+                },
+                 {
+                     currentRateAge1:0,
+                  rate:90,
+                  age:'17-39'
+                },
+                 {
+                     currentRateAge2:0,
+                  rate:7,
+                  age:'17-39'
+                },
+                 {
+                     currentRateAge3:0,
+                  rate:0,
+                  age:'17-39'
+                },
+                
+                 {
+                     currentRateAge4:0,
+                  rate:90,
+                   age:'17-39'
+                },
+                 {
+                     currentRateAge5:0,
+                  rate:99,
+                  age:'17-39'
+                }
+          ]
+}
+
   import {
+    Circle ,
     Cell,
     Toast,
     Swipe, SwipeItem,
@@ -132,6 +277,7 @@
 
   export default {
     components: {
+      [Circle.name]: Circle,
       [Cell.name]: Cell,
       [Swipe.name]: Swipe,
       [SwipeItem.name]: SwipeItem,
@@ -148,6 +294,46 @@
 
     data() {
       return {
+         drw1Data: [],
+         circleData:{
+           sexs:[
+                {
+                  currentRateSex0:0,
+                },
+                 {
+                  currentRateSex1:0,
+
+                }
+           ],
+          ages:[
+                {
+                    currentRateAge0:0,
+  
+                },
+                 {
+                     currentRateAge1:0,
+                },
+                 {
+                     currentRateAge2:0,
+                 },
+                 {
+                     currentRateAge3:0,
+
+                },
+                
+                 {
+                     currentRateAge4:0,
+
+                },
+                 {
+                     currentRateAge5:0,
+
+                }
+          ]
+         }, 
+      devicetypes:[],
+
+
         agePie: null,
         genderPie: null,
         customerCount: null,
@@ -161,7 +347,13 @@
         deviceSelectPop: false,
         timeTypeSelectPop: false,
         columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
-        rangeTypes: [{
+        rangeTypes: [
+          {
+          text: "今日",
+
+          value: '0'
+        },
+          {
           text: "本周",
           selected: false,
           value: '1'
@@ -197,7 +389,9 @@
         maleNum: null,
         genderAll: null,
         percent: '',
-        legendNameArr: [['本周', '上周'], ['本月', '上月'], ['本年', '上年']]
+        legendNameArr: [['本周', '上周'], ['本月', '上月'], ['本年', '上年']],
+
+        showDeviceList:false
       };
     },
     computed: {
@@ -221,19 +415,166 @@
           }
           return data;
         }
-      }
+      },
+    //   text() {
+    //   return this.currentRate.toFixed(0) + '%'
+    // }
     },
     created() {
       this.getOpenId();
+      this.circleData=dat;
     },
     mounted() {
     },
     methods: {
+      //选择设备类型
+      selectTypeFn(item,index){
+     
+        if(this.devicetypes[index].isAct) return;
+        // for(let i=0;i<this.devicetypes.length;i++){
+        //   this.devicetypes[i].isAct=false;
+        // }
+        this.devicetypes[index].isAct=true;
+           console.log(index);
+            console.log(this.devicetypes);
+      },
+      click(){
+      // this.circleData=dat2;
+      // this.circleData.sexs[0].rate= 90;
+      for(let i=0;i<dat2.sexs.length;i++){
+        this.circleData.sexs[i].rate=dat2.sexs[i].rate;
+         this.circleData.sexs[i].sex=dat2.sexs[i].sex;
+      }
+       for(let i=0;i<dat2.ages.length;i++){
+        this.circleData.ages[i].rate=dat2.ages[i].rate;
+         this.circleData.ages[i].age=dat2.ages[i].age;
+      }
+      },
+      click2(){
+        console.log(dat.sexs[0].rate);
+ this.circleData.sexs[0].rate=10;
+// console.log('dat',dat.sexs[0].rate+'==='+'cir',this.circleData.sexs[0].rate);
+//          for(let i=0;i<dat.sexs.length;i++){
+//         this.circleData.sexs[i].rate=10+i;
+//          this.circleData.sexs[i].sex=10+i;
+//       }
+      //  for(let i=0;i<dat.ages.length;i++){
+      //   this.circleData.ages[i].rate=dat.ages[i].rate;
+      //    this.circleData.ages[i].age=dat.ages[i].age;
+      // }
+      },
+      //客流量分析曲线
+         drw(openid) {
+      // let data={};
+      //   if (openid) {
+      //   data.openId = openid;
+      // } else {
+      //   data.openId = window.sessionStorage.getItem('openid');
+      // }
+      let data={"deviceIds":[17],"timeType":2}
+      this.axios
+        .post('http://172.28.5.11:9081/stati/statcompare', { data })
+        // .post(this.api.analysisDay, { data })
+        .then(res => {
+          if (res.result === "true") {
+            this.drw1Data = res.content;
+            // console.log(this.drw1Data);
+            const chart = new F2.Chart({
+              id: "myChart",
+              pixelRatio: window.devicePixelRatio
+            });
+            chart.source(this.drw1Data, {
+              count: {
+                // type: 'cat',
+                tickCount: 8,
+                // min: 1,
+                //  ticks:[0,2,4,6,8,10,12,14],
+              },
+              img_sum: {
+                // type: 'timeCat',
+                // mask: "hh:mm",
+                // range: [0, 1],
+                // ticks:[0,2,4,6,8,10,12,14,16,18,20,22,24],
+                tickCount:3 ,
+                // max: 100,
+                min: 0,
+                formatter: function formatter(ivalue) {
+                  // console.log(ivalue)
+                // return ivalue>=10?ivalue+':00':'0'+ivalue+':00'
+                // //  return ivalue%2?'':ivalue>=10?ivalue+':00':'0'+ivalue+':00'
+
+                  return ivalue
+                }
+              }
+            });
+            //   chart.scale('value', {
+            //   type: 'linear', // 声明 type 字段为分类类型
+            //   values: [1,20] // 重新显示的值
+            // });
+            chart.axis("count", {
+              line: null,
+              label: function label(text, index, total) {
+                var textCfg = {};
+                if (index === 0) {
+                  textCfg.textAlign = "left";
+                } else if (index === total - 1) {
+                  textCfg.textAlign = "right";
+                }
+                return textCfg;
+              }
+            });
+             chart.tooltip({
+              showCrosshairs: true,
+              onShow: function onShow(ev) {
+                console.log(ev);                             
+              }
+            });
+            // chart.area().position('name*value').color('type').shape('')
+            // chart
+            //   .line()
+            //   .position("userName*value")
+            //   .color("type")
+            //   .shape("type", function(type) {
+            //     if (type === "上班") {
+            //       return "#f25e87";
+            //     }
+            //     if (type === "下班") {
+            //       return "#f25e87";
+            //     }
+            //   });
+              chart.line().position('count*img_sum').color('type', function(val) {
+      if (val === '本月') {
+        return '#7A62FF';
+      }else{
+        return '#4ACDD6'
+      }
+    });
+              // chart.interaction('pan');
+            chart.render();
+          } else {
+            console.log("err");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+      //展开设备列表
+      showDeviceListFn(){
+        this.showDeviceList=!this.showDeviceList;
+      },
       //拿openid
       getOpenId() {
         this.getCode(this.api.server + '/#/device').then(resolve => {
           this.openid = resolve;
           this.getDeviceList(resolve);
+          let data={
+            openId:resolve
+          }
+           this.axios.post(this.api.analysisDay, { data }).then(()=>{
+
+           })
+            this.drw(this.openid);
         });
       },
       onClickCart() {
@@ -849,8 +1190,9 @@
       onSearch() {
         this.goDeviceSearch();
       },
+          //跳转设备搜索页面
       goDeviceSearch() {
-        //跳转设备搜索页面
+    
         this.$router.push({
           name: 'deviceSearch',
           query: {
@@ -865,8 +1207,139 @@
 
 <style lang="less">
   .device {
+    background: #fff;
     font-size: 14px;
     padding-bottom: 20px;
+    position: relative;
+    .van-tabs__wrap{
+      top:-10px;
+      padding: 10px 5px;
+      background: #fff;
+      .van-tabs__nav--card .van-tab{
+        border: none;
+      }
+      .van-tabs__nav--card{
+        border:none;
+        margin: 0;
+        .van-tab{
+          color:#6C7B8A!important;
+        }
+        .van-tab.van-tab--active{
+          color:#fff!important;
+
+          border-radius: 30px!important;
+        }
+      }
+    }
+    .circle_box{
+          margin: 10px;
+          // border-radius: 15px;
+          // padding: 10px;
+          // box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
+      ul{
+         padding: 10px 0;
+          box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
+             border-radius: 15px;
+        li{
+          text-align: center;
+          span{
+            display: block;
+            margin-top: 5px;
+          }
+          &.margin_top{
+            margin-top: 15px;
+          }
+        }
+      }
+      margin-top: 20px;
+      .sex_contect{
+            width: 28%;
+             float: left;
+         
+           
+      }
+      .age_content{
+        width: 70%;
+          float: right;
+        li{
+          float: left;
+             width: 33.3%;
+        }
+      }
+      .age_content:after{
+            display: block;
+        content: "";
+        clear: both;
+      }
+    }
+    .circle_box:after{
+        display: block;
+        content: "";
+        clear: both;
+      }
+
+
+    .all_device_init{
+      text-align: center;
+      font-size: 16px;
+    }
+    .device_wrap{
+      position: absolute;
+      background: #fff;
+      z-index: 10000;
+      width: 48vw;
+      height: 38vh;
+      border-radius: 15px;
+      transform: translate3d(0%, 0, 0);
+      box-shadow:0px 3px 29px 0px rgba(59,74,116,0.14);
+       top: -100%;
+      left: 50%;
+      margin-left: -24vw;
+      color:#6C7B8A;
+      padding: 10px 0;
+      // transition: top .3s;
+      // display: none;
+      .device_tit{
+        text-indent: 16px;
+        font-size: 14px;
+      }
+      .all_device_my{
+        border-bottom:1px solid #e5e5e587;
+      }
+      .all_device_enjoy{
+        border-top:1px solid #f0f0f0d6;
+         border-bottom:1px solid #f0f0f0d6;
+      }
+      ul{
+        height: 100%;
+        overflow-y: scroll;
+        li{
+          height: 35px;
+          line-height: 35px;
+          position: relative;
+           .cir_small{
+                  position: absolute;
+                  width: 12px;
+                  height:12px;
+                  border-radius: 12px;
+                  border: 1px solid #DAE1E9;
+                  right: 15px;
+                  top:50%;
+                  margin-top: -6px;
+
+              }
+            .cir_small.act{
+              border-color: #4048EF;
+            }
+        }
+        .child{
+          text-indent: 26px;
+        }
+        }
+      }
+      .device_wrap.act{
+          top: 45px;
+      }
     .input_container {
       margin: 6px;
       padding: 0 8px;
@@ -995,4 +1468,87 @@
       border-width: 0;
     }
   }
+</style>
+<style lang="less">
+.device {
+  .itme-box.device_chart {
+    position: relative;
+    width: 95%;
+    margin: 0 auto;
+    border-radius: 15px;
+    box-shadow: 0px 3px 29px 0px rgba(59, 74, 116, 0.14);
+    background: #fff;
+    margin-bottom: 20px;
+    padding-top: 15px;
+    .not-data{
+      position: absolute;
+    width: 100px;
+    height: 30px;
+    font-size: 16px;
+    color:#999;
+    left: 50%;
+    margin-left: -50px;
+    top: 50%;
+    }
+    p {
+      position: relative;
+      margin: 0;
+      font-size: 16px;
+      color: #6e7d8c;
+      padding-left: 30px;
+      .i {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #4acdd6;
+        border-radius: 50%;
+        left: 15px;
+        top: 50%;
+        margin-top: -5px;
+      }
+      .i1 {
+        background: #8968ff;
+      }
+      .i2 {
+        background: #f25e87;
+      }
+      .selet {
+        font-size: 12px !important;
+        float: right;
+        width: 100px;
+        height: 30px;
+        background: #f5f7f9;
+        margin-right: 30px;
+        line-height: 30px;
+        padding: 0 10px;
+        border-radius: 20px;
+      }
+      .van-icon-arrow-down {
+        right: 0;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        margin-top: -7px;
+      }
+    }
+    canvas {
+      width: 100% !important;
+      height: 255px !important;
+    }
+    #myChart {
+      // width:100% !important;
+    }
+  }
+}
+</style>
+<style>
+.delta{
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border: 5px solid;
+   border-color:#999 transparent  transparent;
+   margin-left: 6px;
+}
 </style>

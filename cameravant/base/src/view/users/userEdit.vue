@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback">
+    <div class="feedback user_add">
         <div class="field flex">
             <div class="scan" @click="picListPop=true">
                 <img :src="imgUrl?imgUrl:emptySrc" alt="">
@@ -52,6 +52,17 @@
                 default: {},
             },
         },
+         watch:{
+          "$route":{
+              handler(route){
+                const that=this;
+                    that.imgUrl = that.item.user_pic;
+                    that.pic = that.item.user_pic_md5;
+                    that.phone = that.item.user_phone;
+                    that.userName = that.item.user_name;
+              }
+          }  
+        },
         data() {
             return {
                 openid: window.sessionStorage.getItem('openid') || this.$route.query['openid'],
@@ -68,12 +79,15 @@
                 userTypes: [],
                 userType: {
                 },
+                index:1
             }
         },
         created() {
+            //   console.log(this.item);
             this.getAiUsertype();
         },
         mounted() {
+          console.log(this.$route.query);
             this.imgUrl = this.item.user_pic;
             this.pic = this.item.user_pic_md5;
             this.phone = this.item.user_phone;
@@ -257,11 +271,11 @@
     }
 </style>
 <style>
-.van-cell {
+.user_add .van-cell {
     background: #F5F7F9;
     margin-top: 6px;
 }
-.feedback .field .scan img[data-v-57c4ebfd]{
+.user_add .field .scan img[data-v-57c4ebfd]{
     border-radius: 15px;
 }
 </style>

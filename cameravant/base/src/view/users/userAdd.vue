@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback">
+    <div class="feedback user_add">
         <div class="field flex">
             <div class="scan" @click="picListPop=true">
                 <img :src="imgUrl?imgUrl:emptySrc" alt="">
@@ -304,7 +304,7 @@
     }
 </style>
 <style>
-.van-cell--large{
+.user_add .van-cell--large{
             background: #F5F7F9;
             margin-top: 10px;
         }
