@@ -2,7 +2,8 @@
   <div class="device">
     <div :class="{'device_wrap':1,'act':showDeviceList}" v-show="showDeviceList">
       <ul>
-        <li @click="selectTypeFn(item,index)" :class="item.child?'child':item.tit?'device_tit':index==0?'all_device_my':index==4?'all_device_enjoy':''" v-for="(item,index) in MydevicetypeList" :key="index"><span :class="{'act':item.isAct,'cir_small':item.device} "></span>{{item.device_inst_addr}}</li>
+        <li v-if="Mydevicetypes.length>1" @click="selectTypeMyFn(item,index)" :class="index>0?'child':index==0?'device_tit':index==0?'all_device_my':''" v-for="(item,index) in Mydevicetypes" :key="index"><span :class="{'act':item.isact,'cir_small':1} "></span>{{item.device_inst_addr}}</li>
+        <li v-if="Ejdevicetypes.length>1" @click="selectTypeEjFn(item,index)" :class="index>0?'child':index==0?'device_tit':index==0?'all_device_enjoy':''" v-for="(item,index) in Ejdevicetypes" ><span :class="{'act':item.isact,'cir_small':1} "></span>{{item.device_inst_addr}}</li>
       </ul>
     </div>
     <topNav>
@@ -10,7 +11,7 @@
         <van-tab v-for="item in tabDeviceType" :title="item.text">
         </van-tab>
       </van-tabs> -->
-      <p class="all_device_init" @click="showDeviceListFn()">全部设备<i class="delta"></i></p>
+      <p class="all_device_init" @click="showDeviceListFn()">{{deviceTypeEd}}<i class="delta"></i></p>
     </topNav>
     <!-- <div class="input_container flex" @click='deviceSelectPop=true'><span class="input_label">设备名称：</span><span class="input_shape">{{selectedDevice.device_inst_addr?selectedDevice.device_inst_addr:'全部'}}</span>
       </div> -->
@@ -26,17 +27,19 @@
          <li :class="index==1?'margin_top':''" v-for="(item,index) in circleData.sexs" :key="index">
          <van-circle
         v-model="item['currentRateSex'+index]"
-        :color="item.sex?'#22CED4':'#FD3FB2'"
+        :color="item.sex=='男'?'#22CED4':'#FD3FB2'"
         fill="#fff"
-        :rate="item.rate"
-        size="60px"
+        :rate="item.img_sum"
+        size="65px"
         layer-color="#E0E4EB"
         :speed="100"
-        :stroke-width="80"
-       :text="item['currentRateSex'+index].toFixed(0) + '%'"
-      /><span>{{item.sex?'男':'女'}}</span>
+        :stroke-width="60"
+        :text="item['currentRateSex'+index].toFixed(0) + '%'"
+      /><span>{{item.sex}}</span>
       </li>
   </ul>
+   <!-- :text="item.img_sum+'%'" -->
+ 
 <!-- 年龄区分 -->
       <ul class="age_content">
           <li :class="index>2?'margin_top':''" v-for="(item,index) in circleData.ages" :key="index">
@@ -44,28 +47,27 @@
        v-model="item['currentRateAge'+index]"
         :color="index==0?'#4049EF':index==1?'#FB8C87':index==2?'#414AEF':index==3?'#15D2B9':index==4?'#685CFF':index==5?'#FF9E76':index==6?'':''"
         fill="#fff"
-        :rate="item.rate"
-        size="60px"
+        :rate="item.img_sum"
+        size="65px"
         layer-color="#E0E4EB"
         :speed="100"
-        :stroke-width="80"
+        :stroke-width="60"
        :text="item['currentRateAge'+index].toFixed(0) + '%'"
-      /><span>{{item.age}}</span> 
+      /><span>{{item.agegroup}}</span> 
     </li> 
       </ul>
     </div>
-     <div class="itme-box device_chart">
+     <div class="itme-box device_chart" id="canvas3-box">
       <p class="tit">
         <i class="i"></i>客流量分析曲线
       </p>
-      <canvas  id="myChart" width height="255px"></canvas>
-      <span class="not-data" v-if="drw1Data==''">暂无数据...</span>
+      <canvas  :id="`myChart3${concut}`" width height="255px"></canvas>
+      <span class="not-data" v-if="drw1Data==''&& showCanvas">暂无分析数据...</span>
     </div>
- <!-- <button @click="click">click</button> 
-<button @click="click2">click2</button>  -->
 
+<!-- ++++++++++++++++++++ -->
 
-    <van-popup v-model="deviceSelectPop" class="pop_p100" position="bottom">
+    <!-- <van-popup v-model="deviceSelectPop" class="pop_p100" position="bottom">
       <van-picker show-toolbar title="" :columns="deviceSeletedList" value-key="device_inst_addr" :default-index="0" @cancel="deviceSelectCancel"
         @confirm="deviceSelectConfirm" />
     </van-popup>
@@ -76,15 +78,9 @@
     <van-popup v-model="dateTimePop" class="pop_p100" position="bottom" @close="confirmDateTime">
       <inlineCalendar @change="dateTimeChange" mode="during" />
     </van-popup>
-    <!-- <div class="two_chart">
-          <canvas id="genderPie" class="half_chart"></canvas>
-          <canvas id="agePie" class="half_chart"></canvas>
-        </div> -->
+
     <div class="two_charts flex" :class="agePieShow?'':'naught'">
       <div style="width:20%;">
-        <!-- <div class="one_chart" :class="genderPieShow?'':'naught'">
-            <canvas id="genderPie" style="width:0;"></canvas>
-          </div> -->
         <div class="column_container" :class="genderPieShow?'':'naught'">
           <div class="male_data" :style="{height:percent,}"><span class="num">男 {{maleNum?maleNum:0}}</span></div>
           <div class="female_data" :style="{height:1-percent,}"><span class="num">女 {{(genderAll-maleNum)?(genderAll-maleNum):0}}</span></div>
@@ -110,7 +106,10 @@
     </div>
     <empty class="grey" v-if="!imgstatPerhourShow">
       <span>分时客流量分析暂无数据</span>
-    </empty>
+    </empty> -->
+
+<!-- +++++++++++++++++++++++++ -->
+
     <van-swipe :autoplay="3000" class="swipe" v-if="imgListShow">
       <van-swipe-item :key="index" v-for="(image, index) in imgList" v-if="index===0">
         <div class="img_container">
@@ -163,101 +162,6 @@
 
 <script>
 // const format = rate => Math.min(Math.max(rate, 0), 100);
-let dat={
-   sexs:[
-                {
-                  currentRateSex0:0,
-                  rate:10,
-                  sex:1
-                },
-                 {
-                  currentRateSex1:0,
-                  rate:20,
-                  sex:0
-                }
-           ],
-          ages:[
-                {
-                    currentRateAge0:0,
-                  rate:0,
-                  age:'17-39'
-                },
-                 {
-                     currentRateAge1:0,
-                  rate:70,
-                  age:'17-39'
-                },
-                 {
-                     currentRateAge2:0,
-                  rate:70,
-                  age:'17-39'
-                },
-                 {
-                     currentRateAge3:0,
-                  rate:30,
-                  age:'17-39'
-                },
-                
-                 {
-                     currentRateAge4:0,
-                  rate:50,
-                   age:'17-39'
-                },
-                 {
-                     currentRateAge5:0,
-                  rate:90,
-                  age:'17-39'
-                }
-          ]
-}
-let dat2={
-   sexs:[
-                {
-                  currentRateSex0:0,
-                  rate:30,
-                  sex:1
-                },
-                 {
-                  currentRateSex1:0,
-                  rate:40,
-                  sex:0
-                }
-           ],
-          ages:[
-                {
-                    currentRateAge0:0,
-                  rate:80,
-                  age:'17-39'
-                },
-                 {
-                     currentRateAge1:0,
-                  rate:90,
-                  age:'17-39'
-                },
-                 {
-                     currentRateAge2:0,
-                  rate:7,
-                  age:'17-39'
-                },
-                 {
-                     currentRateAge3:0,
-                  rate:0,
-                  age:'17-39'
-                },
-                
-                 {
-                     currentRateAge4:0,
-                  rate:90,
-                   age:'17-39'
-                },
-                 {
-                     currentRateAge5:0,
-                  rate:99,
-                  age:'17-39'
-                }
-          ]
-}
-
   import {
     Circle ,
     Cell,
@@ -294,6 +198,7 @@ let dat2={
 
     data() {
       return {
+        showCanvas:false,
          drw1Data: [],
          circleData:{
            sexs:[
@@ -331,10 +236,23 @@ let dat2={
                 }
           ]
          }, 
-        MydevicetypeList:[],
-       EjdevicetypeList:[],
-
-
+         deviceidsArr2:[],
+      deviceidsArr:[],
+      allDeviceListOb:[],
+      deviceTypeEd:'我的设备',
+      deviceselectEd:{},
+      Mydevicetypes:[
+          {
+          device_inst_addr:'我的设备',
+          devicetype_id:[]
+          },
+      ],
+      Ejdevicetypes:[
+        {
+          device_inst_addr:'共享设备',
+            devicetype_id:[]
+          },
+      ],
         agePie: null,
         genderPie: null,
         customerCount: null,
@@ -362,10 +280,12 @@ let dat2={
           text: "本月",
 
           value: '2'
-        }, {
-          text: "全年",
-          value: '3'
-        }],
+        }, 
+        // {
+        //   text: "全年",
+        //   value: '3'
+        // }
+        ],
         timetype: {
           text: "本周",
           value: '1'
@@ -392,7 +312,8 @@ let dat2={
         percent: '',
         legendNameArr: [['本周', '上周'], ['本月', '上月'], ['本年', '上年']],
 
-        showDeviceList:false
+        showDeviceList:false,
+        concut:1
       };
     },
     computed: {
@@ -422,66 +343,134 @@ let dat2={
     // }
     },
     created() {
-      this.getOpenId();
-      this.circleData=dat;
+      this.getCodeInit();
     },
     mounted() {
+    
     },
     methods: {
-      //选择设备类型
-      selectTypeFn(item,index){
-     
-        if(this.devicetypes[index].isAct) return;
-        // for(let i=0;i<this.devicetypes.length;i++){
-        //   this.devicetypes[i].isAct=false;
+      //初始化图表数据
+      initFn(index){
+              this.selectAgeSexFn(index);
+              this.drw(index);
+      },
+    //展开设备列表
+      showDeviceListFn(){
+        this.showDeviceList=!this.showDeviceList;
+      },
+      //选择 '我的' 设备类型
+      selectTypeMyFn(item,index){
+        console.log(item)
+        if(this.Mydevicetypes[index].isact) return;
+          this.selectFalseFn(item);
+            this.deviceTypeEd= this.Mydevicetypes[index].device_inst_addr;
+         this.Mydevicetypes[index].isact=true;
+         if(item.device_inst_addr=="我的设备"){
+          this.deviceidsArr=item.devicetype_id;
+         }else{
+          let idArr=[];
+         idArr[0]= item.devicetype_id
+           this.deviceidsArr=idArr;  
+         }
+         this.clearChartFn();
+         this.initFn(this.tabRangeTypeSelected);
+      },
+      //选择 '共享' 设备类型
+      selectTypeEjFn(item,index){
+         console.log(item)
+        if(this.Ejdevicetypes[index].isact) return;
+        this.selectFalseFn(item);
+          this.deviceTypeEd= this.Ejdevicetypes[index].device_inst_addr;
+         this.Ejdevicetypes[index].isact=true;
+
+        if(item.device_inst_addr=="共享设备"){
+          this.deviceidsArr=item.devicetype_id;
+         }else{
+          let idArr=[];
+         idArr[0]= item.devicetype_id
+           this.deviceidsArr=idArr;  
+         }
+         this.clearChartFn();
+        this.clearChartFn();
+        this.initFn(this.tabRangeTypeSelected);
+      },
+      // 初始所有设备选中样式
+      selectFalseFn(item){
+        for(let i=0;i<this.Mydevicetypes.length;i++){
+          this.Mydevicetypes[i].isact=false;
+        }
+        for(let i=0;i<this.Ejdevicetypes.length;i++){
+                this.Ejdevicetypes[i].isact=false;
+              }
+               this.showDeviceList=false;
+               this.deviceselectEd=item;
+      },
+      //性别，年龄数据
+      selectAgeSexFn(index){
+         let data={
+           "deviceIds":this.deviceidsArr,
+           "timeType":index
+           }
+
+        const that = this;
+        // data.openId = window.sessionStorage.getItem('openid');
+        // if (deviceIds) {
+        //   data.deviceIds = deviceIds;
         // }
-        this.devicetypes[index].isAct=true;
-           console.log(index);
-            console.log(this.devicetypes);
+        this.axios.post("http://172.28.5.11:9081/stati/stat", {
+          data
+        }).then(res=>{
+          if (res.result === "true") {
+              const resData = res.content;
+            for(let i=0;i<resData[0].length;i++){
+                that.circleData.sexs[i].img_sum=resData[0][i].img_sum;
+                 that.circleData.sexs[i].sex=resData[0][i].sex;
+            }
+             for(let i=0;i<resData[1].length;i++){
+                that.circleData.ages[i].img_sum=resData[1][i].img_sum;
+                 that.circleData.ages[i].agegroup=resData[1][i].agegroup;
+            }
+          }else{
+          }
+
+        }).catch(err => {
+          console.log(err);
+        });
       },
-      click(){
-      // this.circleData=dat2;
-      // this.circleData.sexs[0].rate= 90;
-      for(let i=0;i<dat2.sexs.length;i++){
-        this.circleData.sexs[i].rate=dat2.sexs[i].rate;
-         this.circleData.sexs[i].sex=dat2.sexs[i].sex;
-      }
-       for(let i=0;i<dat2.ages.length;i++){
-        this.circleData.ages[i].rate=dat2.ages[i].rate;
-         this.circleData.ages[i].age=dat2.ages[i].age;
-      }
+
+      //清空图表实例
+      clearChartFn(){
+           let canvas3Box=document.querySelector("#canvas3-box");
+            let remoEl=document.querySelector('#myChart3'+this.concut);
+            canvas3Box.removeChild(remoEl);
+            let el= document.createElement('canvas');
+             this.concut+=1;
+            el.id = 'myChart3'+this.concut;
+          canvas3Box.appendChild(el);
       },
-      click2(){
-        console.log(dat.sexs[0].rate);
- this.circleData.sexs[0].rate=10;
-// console.log('dat',dat.sexs[0].rate+'==='+'cir',this.circleData.sexs[0].rate);
-//          for(let i=0;i<dat.sexs.length;i++){
-//         this.circleData.sexs[i].rate=10+i;
-//          this.circleData.sexs[i].sex=10+i;
-//       }
-      //  for(let i=0;i<dat.ages.length;i++){
-      //   this.circleData.ages[i].rate=dat.ages[i].rate;
-      //    this.circleData.ages[i].age=dat.ages[i].age;
-      // }
-      },
+   
       //客流量分析曲线
-         drw(openid) {
+         drw(index) {
       // let data={};
       //   if (openid) {
       //   data.openId = openid;
       // } else {
       //   data.openId = window.sessionStorage.getItem('openid');
       // }
-      let data={"deviceIds":[17],"timeType":2}
+         let data={
+           "deviceIds":this.deviceidsArr,
+           "timeType":index
+           }
       this.axios
         .post('http://172.28.5.11:9081/stati/statcompare', { data })
         // .post(this.api.analysisDay, { data })
         .then(res => {
           if (res.result === "true") {
             this.drw1Data = res.content;
+            if(this.drw1Data.length=='') this.showCanvas=true;
             // console.log(this.drw1Data);
             const chart = new F2.Chart({
-              id: "myChart",
+               id: "myChart3"+this.concut,
               pixelRatio: window.devicePixelRatio
             });
             chart.source(this.drw1Data, {
@@ -544,7 +533,7 @@ let dat2={
             //     }
             //   });
               chart.line().position('count*img_sum').color('type', function(val) {
-      if (val === '本月') {
+      if (val === '今日'||val === '本周'||val === '本月'||val === '本年') {
         return '#7A62FF';
       }else{
         return '#4ACDD6'
@@ -560,22 +549,11 @@ let dat2={
           console.log(err);
         });
     },
-      //展开设备列表
-      showDeviceListFn(){
-        this.showDeviceList=!this.showDeviceList;
-      },
       //拿openid
-      getOpenId() {
+      getCodeInit() {
         this.getCode(this.api.server + '/#/device').then(resolve => {
           this.openid = resolve;
           this.getDeviceList(resolve);
-          let data={
-            openId:resolve
-          }
-           this.axios.post(this.api.analysisDay, { data }).then(()=>{
-
-           })
-            this.drw(this.openid);
         });
       },
       onClickCart() {
@@ -587,10 +565,10 @@ let dat2={
       },
       getPageData(deviceIds) {
         //不分顺序获取各个图表数据
-        this.sexStat(deviceIds);
-        this.ageStat(deviceIds);
-        this.getDeviceStat(deviceIds);
-        this.getImgstatPerhour(deviceIds);
+        // this.sexStat(deviceIds);
+        // this.ageStat(deviceIds);
+        // this.getDeviceStat(deviceIds);
+        // this.getImgstatPerhour(deviceIds);
         this.newImglist(deviceIds);
       },
       //获取设备下拉数据
@@ -606,13 +584,25 @@ let dat2={
           data
         }).then(res => {
           if (res.result === "true") {
-
-            this.MydevicetypeList=res.content[0].devices
-            this.EjdevicetypeList=res.content[1].devices
-
-
+             let data=res;
             this.deviceList = res.content;
             this.deviceIds = res.content[0].deviceIds;
+
+            this.allDeviceListOb=data.content;
+            this.Mydevicetypes= this.Mydevicetypes.concat(this.allDeviceListOb[0].devices);
+            this.Ejdevicetypes=  this.Ejdevicetypes.concat(this.allDeviceListOb[1].devices);
+         
+            if(this.Mydevicetypes.length>1){
+              this.selectFalseFn( this.Mydevicetypes[0]);
+               this.Mydevicetypes[0].isact=true;
+               this.Mydevicetypes[0].devicetype_id=this.allDeviceListOb[0].deviceIds;
+               this.deviceidsArr=this.allDeviceListOb[0].deviceIds;
+            } 
+            if(this.Ejdevicetypes.length>1){
+               this.Ejdevicetypes[0].devicetype_id=this.allDeviceListOb[1].deviceIds;
+            }
+
+            this.initFn(this.tabRangeTypeSelected)
             this.getPageData(this.deviceIds);
           } else {
             that.$toast(res.message);
@@ -649,6 +639,13 @@ let dat2={
         }).then(res => {
           if (res.result === "true" && Object.keys(res.content).length !== 0) {
             const resData = res.content;
+
+
+            // for(let i=0;i<resData.length;i++){
+            //     that.circleData.sexs[i].img_sum=resData[i].img_sum;
+            //      that.circleData.sexs[i].sex=resData[i].sex;
+            // }
+
             that.genderPieShow = true;
             // that.generatePie(resData, 'sex', that.genderPie, '客户性别分布', '人');
             that.maleNum = resData[0].img_sum;
@@ -680,6 +677,12 @@ let dat2={
         }).then(res => {
           if (res.result === "true" && Object.keys(res.content).length !== 0) {
             const resData = res.content;
+
+            // for(let i=0;i<resData.length;i++){
+            //     that.circleData.ages[i].img_sum=resData[i].img_sum;
+            //      that.circleData.ages[i].agegroup=resData[i].agegroup;
+            // }
+
             that.agePieShow = true;
             // that.generatePie(resData, 'agegroup', that.agePie, '客户年龄分布', '人');
             /* let agePieInit = echarts.init(document.getElementById('agePie'));
@@ -1151,6 +1154,8 @@ let dat2={
         this.deviceSelectPop = false;
       },
       timeTypeSelectConfirm(value) {
+        this.clearChartFn();
+        this.initFn(value);
         let tmp = JSON.stringify(this.timetype);
         this.timetype = this.rangeTypes[value];
         if (tmp !== JSON.stringify(value)) {
@@ -1268,8 +1273,9 @@ let dat2={
         width: 70%;
           float: right;
         li{
-          float: left;
+          // float: left;
              width: 33.3%;
+             display: inline-block;
         }
       }
       .age_content:after{
@@ -1434,9 +1440,12 @@ let dat2={
       margin: 20px auto;
     }
     .swipe {
-      padding-top: 15px;
-      margin-left: -2px;
+      padding:4px 0;
       text-align: center;
+      width: 95%;
+    box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
+    border-radius: 15px;
+    margin: 0 auto;
       .img_container {
         display: inline-block;
         width: calc(~'33% - 10px');
@@ -1446,6 +1455,7 @@ let dat2={
         .img {
           width: 100%;
           height: 100%;
+          border-radius: 10px;
         }
         .note {
           position: absolute;
@@ -1477,6 +1487,9 @@ let dat2={
 </style>
 <style lang="less">
 .device {
+  .van-circle__layer{
+        transform: rotate(0deg);
+  }
   .itme-box.device_chart {
     position: relative;
     width: 95%;
@@ -1488,12 +1501,12 @@ let dat2={
     padding-top: 15px;
     .not-data{
       position: absolute;
-    width: 100px;
+    width: 150px;
     height: 30px;
     font-size: 16px;
     color:#999;
     left: 50%;
-    margin-left: -50px;
+    margin-left: -75px;
     top: 50%;
     }
     p {

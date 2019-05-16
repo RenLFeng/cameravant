@@ -79,6 +79,8 @@ export default {
 
   data() {
     return {
+      moveLeft:90,
+moveTop:0,
       seleed: "员工姓名",
       show: false,
       person: [],
@@ -143,12 +145,12 @@ export default {
                 // type: 'timeCat',
                 mask: "hh:mm",
                 // range: [0, 1],
-                ticks:[0,2,4,6,8,10,12,14,16,18,20,22,24],
+                ticks:[0,3,6,9,12,15,18,21,24],
                 tickCount: 25,
                 max: 24,
                 min: 0,
                 formatter: function formatter(ivalue) {
-                  console.log(ivalue)
+                  // console.log(ivalue)
                 return ivalue>=10?ivalue+':00':'0'+ivalue+':00'
                 //  return ivalue%2?'':ivalue>=10?ivalue+':00':'0'+ivalue+':00'
 
@@ -175,8 +177,11 @@ export default {
              chart.tooltip({
               showCrosshairs: true,
               onShow: function onShow(ev) {
-                // console.log(ev);
+                console.log(ev);
                 var items = ev.items;
+
+
+                if(items.length>1){
                 let arrTime1=items[0].value.split(':');
                 let arrTime2=items[1].value.split(':');           
                 let time1="";
@@ -196,7 +201,20 @@ export default {
                   time1=time1.split(".").join(":");   
                   time2= time2.split(".").join(":");                  
                     items[0].value = time1;
-                    items[1].value =time2;                               
+                    items[1].value =time2;  
+                }else{
+                   let arrTime1=items[0].value.split(':');
+                    let time1="";
+                      time1=(arrTime1[0]=="00")?arrTime1[1]:arrTime1[0]; 
+                      if(time1.length=='4'){
+                      time1=time1+'0';
+                  }else if(time1.length=='2'){
+                      time1=time1+'.00';
+                  }
+                   time1=time1.split(".").join(":");   
+                  items[0].value = time1;
+                }
+                                           
               }
             });
             // chart.area().position('name*value').color('type').shape('')
@@ -216,7 +234,7 @@ export default {
       if (val === '上班') {
         return '#4acdd6';
       }else{
-        return '#4acdd6'
+        return '#8968ff'
       }
     });
               // chart.interaction('pan');
@@ -383,13 +401,13 @@ export default {
                 //   tickCount: 31,
                 //  max: 31,
                 //  min:1,
-                 ticks: ticks
+                //  ticks: ticks
               },
            value: {
                  // type: 'timeCat',
                  //mask: "hh:mm",
                 // range: [0, 1],
-                  ticks:[0,2,4,6,8,10,12,14,16,18,20,22,24],
+                  ticks:[0,3,6,9,12,15,18,21,24],
                  tickCount: 25,
                  max: 24,
                  min: 0,
@@ -402,16 +420,15 @@ export default {
       chart3.tooltip({
               showCrosshairs: true,
               onShow: function onShow(ev) {
-                // console.log(ev);
+                console.log(ev);
                 let items = ev.items;
+              if(items.length>1){
                 let arrTime1=items[0].value.split(':');
                 let arrTime2=items[1].value.split(':');           
                 let time1="";
                  let time2="";
                   time1=(arrTime1[0]=="00")?arrTime1[1]:arrTime1[0]; 
                   time2=(arrTime2[0]=="00")?arrTime2[1]:arrTime2[0]; 
-                  //   console.log('time1',time1)
-                  // console.log('time2',time2); 
                    if(time1.length=='4'){
                       time1=time1+'0';
                   }else if(time1.length=='2'){
@@ -423,10 +440,45 @@ export default {
                       time2=time2+'.00';
                   }
                   time1=time1.split(".").join(":");   
-                  time2= time2.split(".").join(":");    
-                             
+                  time2= time2.split(".").join(":");                  
                     items[0].value = time1;
-                    items[1].value =time2;                               
+                    items[1].value =time2;  
+                }else{
+                   let arrTime1=items[0].value.split(':');
+                    let time1="";
+                      time1=(arrTime1[0]=="00")?arrTime1[1]:arrTime1[0]; 
+                      if(time1.length=='4'){
+                      time1=time1+'0';
+                  }else if(time1.length=='2'){
+                      time1=time1+'.00';
+                  }
+                   time1=time1.split(".").join(":");   
+                  items[0].value = time1;
+                }
+
+
+                // let arrTime1=items[0].value.split(':');
+                // let arrTime2=items[1].value.split(':');           
+                // let time1="";
+                //  let time2="";
+                //   time1=(arrTime1[0]=="00")?arrTime1[1]:arrTime1[0]; 
+                //   time2=(arrTime2[0]=="00")?arrTime2[1]:arrTime2[0]; 
+                //   //   console.log('time1',time1)
+                //   // console.log('time2',time2); 
+                //    if(time1.length=='4'){
+                //       time1=time1+'0';
+                //   }else if(time1.length=='2'){
+                //       time1=time1+'.00';
+                //   }
+                //      if(time2.length=='4'){
+                //       time2=time2+'0';
+                //   }else if(time2.length=='2'){
+                //       time2=time2+'.00';
+                //   }
+                //   time1=time1.split(".").join(":");   
+                //   time2= time2.split(".").join(":");    
+                //     items[0].value = time1;
+                //     items[1].value =time2;                               
               }
             });
       //chart3.tooltip({
@@ -457,7 +509,7 @@ export default {
       if (val === '上班') {
         return '#f25e87';
       }else{
-        return '#f25e87'
+        return '#c789e6'
       }
     });
             chart3.render();
@@ -480,6 +532,18 @@ export default {
     background: #fff;
     margin-bottom: 20px;
     padding-top: 15px;
+    .canvas_title{
+      position: absolute;
+      width: 100px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      color: #fff;
+      font-size: 14px;
+      background: rgba(0,0,0,.3);
+      border-radius: 10px;
+
+    }
     .not-data{
       position: absolute;
     width: 100px;

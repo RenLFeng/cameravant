@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback sq_list" v-if="Object.keys(deviceList).length>0">
+    <div class="feedback sq_list" v-if="Object.keys(myDevices).length>0">
           <ul class="feedback_list">
                     <!-- <li class="flex" v-for="(item,index) in myDevices" v-swipeleft="{fn:deleteDevice,item:item}" :class="item.canDelete?'translate':''"
                         :key="index"> -->
@@ -7,13 +7,14 @@
                         :key="index">
                        
                         <div class="left">
-                             <p class="user-title"> 张三 <van-tag round :class="item.user_sex?'man':'girl'">{{item.user_sex?'男':'女'}}</van-tag></p>
-                            <span class="name ellipsis">{{item.device_inst_addr}}</span>
+                                      <p class="user-title"> {{item.name}}</p>
+                             <!-- <p class="user-title"> {{item.name}} <van-tag round :class="item.user_sex?'man':'girl'">{{item.user_sex?'男':'女'}}</van-tag></p> -->
+                            <span style="height:20px;" class="name ellipsis">上海</span>
                             <!-- <span class="time ellipsis">{{item.device_code}}</span>  active: item.user_sex, 'girl': item.user_sex  -->
                         </div>
                         <div class="middle">
                             <!-- <span class="name ellipsis">{{item.devicetype_name}}</span> -->
-                            <span class="time">{{item.device_addtime}} <i @click="claerBindFn(item,index)" class="jiebang"></i></span>
+                            <span class="time">{{item.create_time}} <i @click="claerBindFn(item,index)" class="jiebang"></i></span>
                         </div>
                         <!-- <span class="iconfont icon-chakan"></span> -->
                         <!-- <span class="iconfont icon-shanchu" @click="deleteDevice(item)"></span> -->
@@ -107,37 +108,57 @@
                 }else{
                     data.openId=window.sessionStorage.getItem('openid');
                 }
-                this.axios.post(this.api.wechatDevice, {
+                this.axios.post("http://172.28.5.11:9081/user/sharelist", {
                     data
                 }).then(res => {
-                    if (res.result === "true") {
-                        that.deviceList = res.content;
-                        that.myDevices = res.content[0].devices;
-                        
-                        let dat=[
-                            {
-                               device_inst_addr:"sk",
-                               device_addtime: "2019-04-19 15:17:52"
-                            },
-                             {
-                               device_inst_addr:"sk2",
-                               device_addtime: "2019-04-19 15:17:52"
-                            },
-                        ]
-                        that.myDevices=that.myDevices.concat(dat);
-                        console.log(that.myDevices);
-                        that.otherDevices = res.content[1].devices;
-                         that.otherDevices=that.myDevices.concat({
-                               device_inst_addr:"sk3",
-                               device_addtime: "2019-04-19 15:17:52"
-                            });
-
+                    if (res.result === "true") {               
+                        that.myDevices=res.content;
                     } else {
                         that.$toast(res.message);
                     }
                 }).catch(err => {
                     window.console.log(err);
                 });
+            },
+              //解绑授权用户列表
+            claerBindFn(item,index){
+                let that=this;
+                   Dialog.confirm({
+                    title: '解除授权',
+                    message: '您确认解除该授权用户吗？',
+                    // beforeClose
+                }).then((res)=>{                  
+                     let data = {};
+                      data.openId=window.sessionStorage.getItem('openid');
+                    data.id=item.id;
+                    this.axios.post("http://172.28.5.11:9081/user/unbindshare", {data }).
+                    then((res)=>{
+                        if(res.result=="true"){
+                            this.myDevices.splice(index,1);
+                            Dialog.alert({
+                            message: '解除授权成功'
+                            }).then(()=>{
+                                if(that.myDevices.length=='0'){
+                                      //跳转授权页面
+                                     that.$router.push({
+                                        name: 'shareAccount',
+                                        query: {
+                                        openid: window.sessionStorage.getItem('openid') || this.$route.query['openid'],
+                                }
+                            })
+                                }
+                            })
+                        }else{
+                              Dialog.alert({
+                                message: '解除授权失败'
+                                })
+                        }
+                    }).catch((err)=>{
+                         Dialog.alert({
+                        message: '解除授权失败'
+                      })
+                    })
+                })
             },
             setEditItem(item) {
                 this.editItem = Object.assign({}, item);
@@ -258,20 +279,7 @@
                     this.getDeviceList(resolve);
                 });
             },
-            //解绑授权用户列表
-            claerBindFn(item,index){
-                   Dialog.confirm({
-                    title: '解除授权',
-                    message: '您确认解除该授权用户吗？',
-                    // beforeClose
-                }).then(()=>{
-                    console.log(item);
-                    this.myDevices.splice(index,1);
-                }).catch(() => {
-                    alert('cancle');
-                    // on cancel
-                });
-            }
+          
         },
         computed: {
         }
@@ -301,6 +309,8 @@
             margin-bottom: 0;
             padding: 5px 0;
             font-size: 18px;
+            margin-top: 0;
+            padding-bottom: 0;
             .man{
                 background: #22CED4 !important;
             }
@@ -312,7 +322,7 @@
             li {
                 justify-content: space-between;
                 align-items: center;
-                padding: 10px 15px;
+                padding: 3px 15px;
                 box-sizing: border-box;
                 line-height: 24px;
                 position: relative;
@@ -334,19 +344,20 @@
                         text-align: left;
                         .jiebang{
                             position: absolute;
-                            width: 30px;
-                            height: 30px;
+                            width: 20px;
+                            height: 20px;
                             background: url(../../assets/jiebang.png) no-repeat ;
                             background-size: 100%;
                             background-position: 50% 50%;                             
                             right: 0;
-                            top: -2px;
+                            top: 3px;
                         }
                     }
                     .name {}
                 }
                 .left {
                     width: calc(~'50% - 60px');
+                    padding-bottom: 5px;
                 }
                 .middle {
                     width: calc(~'50%');
