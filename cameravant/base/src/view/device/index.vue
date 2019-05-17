@@ -244,13 +244,13 @@
       Mydevicetypes:[
           {
           device_inst_addr:'我的设备',
-          devicetype_id:[]
+          device_id:[]
           },
       ],
       Ejdevicetypes:[
         {
           device_inst_addr:'共享设备',
-            devicetype_id:[]
+            device_id:[]
           },
       ],
         agePie: null,
@@ -365,10 +365,10 @@
             this.deviceTypeEd= this.Mydevicetypes[index].device_inst_addr;
          this.Mydevicetypes[index].isact=true;
          if(item.device_inst_addr=="我的设备"){
-          this.deviceidsArr=item.devicetype_id;
+          this.deviceidsArr=item.device_id;
          }else{
           let idArr=[];
-         idArr[0]= item.devicetype_id
+         idArr[0]= item.device_id
            this.deviceidsArr=idArr;  
          }
          this.clearChartFn();
@@ -383,10 +383,10 @@
          this.Ejdevicetypes[index].isact=true;
 
         if(item.device_inst_addr=="共享设备"){
-          this.deviceidsArr=item.devicetype_id;
+          this.deviceidsArr=item.device_id;
          }else{
           let idArr=[];
-         idArr[0]= item.devicetype_id
+         idArr[0]= item.device_id
            this.deviceidsArr=idArr;  
          }
          this.clearChartFn();
@@ -585,6 +585,7 @@
           if (res.result === "true") {
              let data=res;
             this.deviceList = res.content;
+            
             this.deviceIds = res.content[0].deviceIds;
 
             this.allDeviceListOb=data.content;
@@ -594,11 +595,11 @@
             if(this.Mydevicetypes.length>1){
               this.selectFalseFn( this.Mydevicetypes[0]);
                this.Mydevicetypes[0].isact=true;
-               this.Mydevicetypes[0].devicetype_id=this.allDeviceListOb[0].deviceIds;
+               this.Mydevicetypes[0].device_id=this.allDeviceListOb[0].deviceIds;
                this.deviceidsArr=this.allDeviceListOb[0].deviceIds;
             } 
             if(this.Ejdevicetypes.length>1){
-               this.Ejdevicetypes[0].devicetype_id=this.allDeviceListOb[1].deviceIds;
+               this.Ejdevicetypes[0].device_id=this.allDeviceListOb[1].deviceIds;
             }
 
             this.initFn(this.tabRangeTypeSelected)
