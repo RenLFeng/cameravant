@@ -100,6 +100,8 @@ const ajaxUrl = {
     userApplyCode:'/server/user/applyCode',//发送验证码
     userVerifyCode:'/server/user/verifyCode',//校验验证码
     userWebauth:'/server/user/webauth',//账户密码授权    
+    userUnbindshare:'/server/user/unbindshare',//  解绑授权 
+    userSharelist:'/server/user/sharelist',//   授权 列表
 
     aiPiclist:'/server/ai/piclist',//获取图片列表
     aiAdduser:'/server/ai/adduser',//给设备组添加用户
@@ -112,6 +114,10 @@ const ajaxUrl = {
     analysisDay:'/server/analysis/day',//考勤分析
     analysisTime:'/server/analysis/times',//今日活跃度
     analysisUser:'/server/analysis/user',//考勤时间
+
+    statiStat:'/server/stati/stat',//device性别，年龄数据
+    statiStatcompare:'/server/stati/statcompare',//device客流量分析曲线
+      
 }
 // 返回模块
 export default ajaxUrl;

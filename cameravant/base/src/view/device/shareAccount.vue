@@ -1,17 +1,17 @@
 <template>
-    <div class="feedback">
+    <div class="feedback shareAccount">
         <div class="scan" @click="wxScan">
-            <span class="iconfont icon-saomiao">
-            </span>
+            <!-- <span class="iconfont icon-saomiao">
+            </span> -->
             扫描二维码
         </div>
         <div class="type flex">
-             <p class="label-name">二维码信息</p>
-            <van-field v-model="deviceCode" placeholder="扫描后自动获取" size="large" required readonly @click="wxScan" />
+             <!-- <p class="label-name">二维码信息</p> -->
+            <van-field style="text-align:center" v-model="deviceCode" placeholder="请对方打开“个人中心”里“我的二维码”" size="large" required readonly @click="wxScan" />
             <!-- <van-field v-model="deviceCode" label="二维码信息" placeholder="扫描后自动获取" size="large" required @click="wxScan" /> -->
         </div>
         <div class="btn_container">
-            <van-button type="info" size="large" @click="shareAccount" class="btn">添加设备</van-button>
+            <van-button type="info" size="large" @click="shareAccount" class="btn">共享</van-button>
         </div>
     </div>
 </template>
@@ -171,6 +171,9 @@
         -webkit-overflow-scrolling: touch;
         background-color: #fff;
         padding-bottom: 10px;
+        .van-field__body{
+            
+        }
         .scan {
             width: 140px;
             height: 140px;
@@ -258,4 +261,12 @@
             }
     }
  
+</style>
+<style>
+.shareAccount input[placeholder]{
+                text-align: center !important;
+            }
+.feedback .btn[data-v-02a63a56] {
+    margin: 0;
+}
 </style>

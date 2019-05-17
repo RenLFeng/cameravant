@@ -1,5 +1,5 @@
 <template>
-  <div class="device">
+  <div class="device device_box">
     <div :class="{'device_wrap':1,'act':showDeviceList}" v-show="showDeviceList">
       <ul>
         <li v-if="Mydevicetypes.length>1" @click="selectTypeMyFn(item,index)" :class="index>0?'child':index==0?'device_tit':index==0?'all_device_my':''" v-for="(item,index) in Mydevicetypes" :key="index"><span :class="{'act':item.isact,'cir_small':1} "></span>{{item.device_inst_addr}}</li>
@@ -17,6 +17,7 @@
       </div> -->
     <!-- <div class="input_container flex" @click='timeTypeSelectPop=true'><span class="input_label">时间选择：</span><span class="input_shape">{{timetype.value==='4'?selectedDateTime[0]+'至'+selectedDateTime[1]:timetype.text}}</span>
       </div> -->
+      <p class="bac"></p>
     <van-tabs v-model="tabRangeTypeSelected" type="card" color="#0091fa" @change="timeTypeSelectConfirm">
       <van-tab v-for="(item,index) in rangeTypes" :title="item.text" :key="index">
       </van-tab>
@@ -30,10 +31,10 @@
         :color="item.sex=='男'?'#22CED4':'#FD3FB2'"
         fill="#fff"
         :rate="item.img_sum"
-        size="65px"
+        size="55px"
         layer-color="#E0E4EB"
         :speed="100"
-        :stroke-width="60"
+        :stroke-width="50"
         :text="item['currentRateSex'+index].toFixed(0) + '%'"
       /><span>{{item.sex}}</span>
       </li>
@@ -48,10 +49,10 @@
         :color="index==0?'#4049EF':index==1?'#FB8C87':index==2?'#414AEF':index==3?'#15D2B9':index==4?'#685CFF':index==5?'#FF9E76':index==6?'':''"
         fill="#fff"
         :rate="item.img_sum"
-        size="65px"
+        size="55px"
         layer-color="#E0E4EB"
         :speed="100"
-        :stroke-width="60"
+        :stroke-width="50"
        :text="item['currentRateAge'+index].toFixed(0) + '%'"
       /><span>{{item.agegroup}}</span> 
     </li> 
@@ -61,7 +62,7 @@
       <p class="tit">
         <i class="i"></i>客流量分析曲线
       </p>
-      <canvas  :id="`myChart3${concut}`" width height="255px"></canvas>
+      <canvas  :id="`myChart3${concut}`" width height="200px"></canvas>
       <span class="not-data" v-if="drw1Data==''&& showCanvas">暂无分析数据...</span>
     </div>
 
@@ -106,11 +107,10 @@
     </div>
     <empty class="grey" v-if="!imgstatPerhourShow">
       <span>分时客流量分析暂无数据</span>
-    </empty> -->
-
+    </empty> --> 
 <!-- +++++++++++++++++++++++++ -->
 
-    <van-swipe :autoplay="3000" class="swipe" v-if="imgListShow">
+    <van-swipe :autoplay="3000" class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
       <van-swipe-item :key="index" v-for="(image, index) in imgList" v-if="index===0">
         <div class="img_container">
           <img :src="imgList[0].imgMd5+'?w=400&h=400'" class="img" />
@@ -154,9 +154,9 @@
         </div>
       </van-swipe-item>
     </van-swipe>
-    <empty class="grey" v-else>
+    <!-- <empty class="grey" v-else>
       <span>暂无图片数据</span>
-    </empty>
+    </empty> -->
   </div>
 </template>
 
@@ -346,7 +346,6 @@
       this.getCodeInit();
     },
     mounted() {
-    
     },
     methods: {
       //初始化图表数据
@@ -417,7 +416,7 @@
         // if (deviceIds) {
         //   data.deviceIds = deviceIds;
         // }
-        this.axios.post("http://172.28.5.11:9081/stati/stat", {
+        this.axios.post(this.api.statiStat, {
           data
         }).then(res=>{
           if (res.result === "true") {
@@ -462,7 +461,7 @@
            "timeType":index
            }
       this.axios
-        .post('http://172.28.5.11:9081/stati/statcompare', { data })
+        .post(this.api.statiStatcompare, { data })
         // .post(this.api.analysisDay, { data })
         .then(res => {
           if (res.result === "true") {
@@ -538,7 +537,7 @@
       }else{
         return '#4ACDD6'
       }
-    });
+    }).shape('smooth');
               // chart.interaction('pan');
             chart.render();
           } else {
@@ -1223,22 +1222,25 @@
     padding-bottom: 20px;
     position: relative;
     .van-tabs__wrap{
-      top:-10px;
-      padding: 10px 5px;
-      background: #fff;
+      top:-14px;
+      padding: 8px 8px 12px 8px;
+    background: #fff;
       .van-tabs__nav--card .van-tab{
         border: none;
+      
       }
       .van-tabs__nav--card{
         border:none;
         margin: 0;
         .van-tab{
           color:#6C7B8A!important;
+         line-height: 40px;
         }
         .van-tab.van-tab--active{
           color:#fff!important;
-
-          border-radius: 30px!important;
+          height: 40px!important;
+          border-radius: 35px!important;
+          background:linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
         }
       }
     }
@@ -1256,9 +1258,11 @@
           span{
             display: block;
             margin-top: 5px;
+            color: #6C7B8A;
+            font-size: 12px;
           }
           &.margin_top{
-            margin-top: 15px;
+            margin-top: 10px;
           }
         }
       }
@@ -1300,7 +1304,7 @@
       background: #fff;
       z-index: 10000;
       width: 48vw;
-      height: 38vh;
+      height: 42vh;
       border-radius: 15px;
       transform: translate3d(0%, 0, 0);
       box-shadow:0px 3px 29px 0px rgba(59,74,116,0.14);
@@ -1459,7 +1463,7 @@
         }
         .note {
           position: absolute;
-          bottom: -12px;
+          bottom: -3px;
           left: 2px;
           width: 100%;
           background: rgba(0, 0, 0, 0.5);
@@ -1469,6 +1473,10 @@
           font-size: 12px;
           text-align: center;
           color: #fff;
+      
+           border-bottom-left-radius: 10px;
+           border-bottom-right-radius: 10px;
+           margin: 0;
         }
       }
       .img {
@@ -1497,8 +1505,8 @@
     border-radius: 15px;
     box-shadow: 0px 3px 29px 0px rgba(59, 74, 116, 0.14);
     background: #fff;
-    margin-bottom: 20px;
-    padding-top: 15px;
+    margin-bottom: 10px;
+    padding-top: 8px;
     .not-data{
       position: absolute;
     width: 150px;
@@ -1559,9 +1567,24 @@
       // width:100% !important;
     }
   }
+  .van-tab{
+    // line-height: 30px !important;
+  }
+  .van-tab--active{
+    // height: 30px !important;
+    // background: linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
+  }
 }
 </style>
 <style>
+.device_box .header_common{
+    height: 30px;
+    line-height: 15px;
+}
+.bac{
+      background: #f0f0f0;
+    height: 9px;
+}
 .delta{
   display: inline-block;
   width: 0;
@@ -1570,4 +1593,39 @@
    border-color:#999 transparent  transparent;
    margin-left: 6px;
 }
+.van-tab--active{
+  /* height: 30px !important; */
+}
+.van-tab{
+  /* line-height: 29px!important; */
+}
+.van-tab.van-tab--active{
+  /* height: 30px!important; */
+}
+.device_box .van-tab{
+    /* line-height: 38px; */
+}
+/* .device_box .van-tabs__content{
+    margin-top: 10px;
+} */
+/* .device_box .van-tabs__wrap{
+    padding:10px 15px 0;
+} */
+.device_box .van-tab--active {
+    /* background: -webkit-linear-gradient(135deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
+    background: linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
+    color: #fff;
+    border-radius: 0.8rem;
+    width: 50%;
+    height: 80%;
+    margin: 0 auto; */
+    /* line-height: 3px; */
+}
+/* .device_box .van-tabs__line{
+            display: none;
+        } */
+/* .device_box .feedback_list li .left img[data-v-487cc491]{
+    border-radius: 10px;
+        vertical-align: middle;
+} */
 </style>

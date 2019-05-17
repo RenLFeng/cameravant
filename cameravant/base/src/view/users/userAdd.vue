@@ -247,7 +247,7 @@
             padding: 0 16px;
             align-items: center;
             .scan {
-                margin: 10px 5px 30px 0;
+                margin: 10px 5px 41px 0;
                 width: 105px;
                 height: 119px;
                 /* 264*300 */
@@ -306,6 +306,11 @@
 <style>
 .user_add .van-cell--large{
             background: #F5F7F9;
-            margin-top: 10px;
+              margin-bottom: 8px;
+            padding: 3px 20px;
+        }
+        .user_add .field .scan[data-v-68a51afe]{
+            width:100px;
+            height:100px;
         }
 </style>

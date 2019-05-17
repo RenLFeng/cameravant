@@ -26,14 +26,18 @@
       <canvas :id="`myChart3${concut}`" class="canvas3"  width height="255px"></canvas>
       <span class="not-data" v-if="drw3Data==''">暂无数据...</span>
     </div>
-    <van-actionsheet v-model="show" :actions="person" cancel-text="取消" @select="onSelect"/>
-    <!-- <van-picker
+    <van-actionsheet v-model="show" :actions="columns" cancel-text="取消" @select="onSelect"/>
+ <!-- <van-popup v-model="show">
+ <van-picker
   show-toolbar
-  title="标题"
-  :columns="person"
+  title="请选择员工"
+  :columns="columns[user_name]"
   @cancel="onCancel"
-  @confirm="onConfirm"
-/> -->
+  @confirm="onSelect"
+/>
+ </van-popup> -->
+ 
+
   </div>
 </template>
 
@@ -83,7 +87,7 @@ export default {
 moveTop:0,
       seleed: "员工姓名",
       show: false,
-      person: [],
+      columns: [],
       drw1Data: [],
       drw2Data: [],
       drw3Data: [],
@@ -118,19 +122,36 @@ moveTop:0,
       } else {
         data.openId = window.sessionStorage.getItem('openid');
       }
+     
+// this.api.analysisDay
       this.axios
         .post(this.api.analysisDay, { data })
         .then(res => {
           if (res.result === "true") {
             this.drw1Data = res.content;
-//              this.drw1Data=[
-//               {type: "上班", value: 12, userName: '测试1'},
+  //            this.drw1Data=[
+  //         {type: "上班时间", value: 9, userName: '测试2'},
+  //   {type: "下班时间", value: 18, userName: '测试2'},
+  //             {type: "上班", value: 12, userName: '测试1'},
 
-//  {type: "上班", value: 9.5, userName: '测试2'},
+  //             {type: "上班", value: 9.5, userName: '测试2'},
 
-//    {type: "下班", value: 14.08, userName: '测试1'},
-//   {type: "下班", value: 18.4, userName: '测试2'},
-//             ];
+  //  {type: "下班", value: 16.08, userName: '测试1'},
+  // {type: "下班", value: 18.4, userName: '测试2'},
+            
+         
+
+  //  {type: "上班时间", value: 9, userName: '测试2'},
+  //   {type: "下班时间", value: 18, userName: '测试2'},
+        
+  //     {type: "上班时间", value: 9, userName: '测试1'},
+  //             {type: "下班时间", value: 18, userName: '测试1'},
+  //           ];
+            for(let i=0;i< this.drw1Data.length;i++){
+              if(this.drw1Data[i].type=="上班"&&this.drw1Data[i].value<6){
+                this.drw1Data[i].value=6;
+              }
+            }
             // console.log(this.drw1Data);
             const chart = new F2.Chart({
               id: "myChart",
@@ -145,12 +166,13 @@ moveTop:0,
                 // type: 'timeCat',
                 mask: "hh:mm",
                 // range: [0, 1],
-                ticks:[0,3,6,9,12,15,18,21,24],
-                tickCount: 25,
+                ticks:[6,9,12,15,18,21,24],
+                // tickCount: 15,
                 max: 24,
-                min: 0,
+                min: 6,
                 formatter: function formatter(ivalue) {
                   // console.log(ivalue)
+              
                 return ivalue>=10?ivalue+':00':'0'+ivalue+':00'
                 //  return ivalue%2?'':ivalue>=10?ivalue+':00':'0'+ivalue+':00'
 
@@ -179,8 +201,12 @@ moveTop:0,
               onShow: function onShow(ev) {
                 console.log(ev);
                 var items = ev.items;
-
-
+                for(var i=0;i<items.length;i++){
+                 
+                }
+               
+               
+               
                 if(items.length>1){
                 let arrTime1=items[0].value.split(':');
                 let arrTime2=items[1].value.split(':');           
@@ -231,12 +257,27 @@ moveTop:0,
             //     }
             //   });
               chart.line().position('userName*value').color('type', function(val) {
+      if (val === '上班时间') {
+        return '#dddddd';
+      }else
+      if (val === '下班时间') {
+        return '#dddddd';
+      }else
       if (val === '上班') {
         return '#4acdd6';
       }else{
         return '#8968ff'
       }
-    });
+    }).shape('smooth').style('type',{ 
+    lineWidth(val) {
+    if (val === '上班时间'||val === '下班时间') {
+      return 1;
+    }
+    // return null;
+  }
+   
+
+      });
               // chart.interaction('pan');
             chart.render();
           } else {
@@ -263,9 +304,12 @@ moveTop:0,
             this.drw2Data = res.content;
             //  this.drw2Data=[
             //   {value: 15.1, userName: '张三1'},
-            //   { value: 18.48, userName: '张2'},
-            //   // {type: "下班", value: 18.4, userName: 'yi1'},
-            //   // {type: "下班", value: 19.55, userName: 'yi2'}
+            //   { value: 10.48, userName: '张2'},
+            //     {value: 18.1, userName: '张三11'},
+            //   // { value: 18, userName: '张22'},
+            //   //   {value: 10, userName: '张三111'},
+            //   // { value: 21, userName: '张222'},
+
             // ];
             const chart2 = new F2.Chart({
               id: "myChart2",
@@ -312,7 +356,7 @@ moveTop:0,
         return '#8968ff'
       }
       //  return '#8968f'
-    });
+    }).shape('smooth');
             // chart2
             //   .line()
             //   .position("userName*value")
@@ -348,13 +392,13 @@ moveTop:0,
           if (res.result) {
             let temp = res.content;
             for (var i = 0; i < temp.length; i++) {
-              this.person.push({
+              this.columns.push({
                 name: temp[i].user_name,
                 id: temp[i].user_id,
               });
             }
-            this.drw3Init(this.person[0].id);
-            this.seleed = this.person[0].name;
+            this.drw3Init(this.columns[0].id);
+            this.seleed = this.columns[0].name;
           } else {
           }
         }).catch(err => {});
@@ -378,6 +422,9 @@ moveTop:0,
       this.drw3Init(item.id);
       
     },
+     onCancel() {
+      Toast('取消');
+    },
       drw3Init(id) {
       let data = { userId: id };
       this.axios.post(this.api.analysisUser, { data })
@@ -386,7 +433,10 @@ moveTop:0,
             this.drw3Data =res.content;  
           let ticks=[];
           for(var i=0;i<this.drw3Data.length;i++){
-            ticks[i]=this.drw3Data[i].day
+            ticks[i]=this.drw3Data[i].day;
+             if(this.drw3Data[i].type=="上班"&&this.drw3Data[i].value<6){
+                this.drw3Data[i].value=6;
+              }
           }
         const chart3 = new F2.Chart({
               id: "myChart3"+this.concut,
@@ -407,10 +457,10 @@ moveTop:0,
                  // type: 'timeCat',
                  //mask: "hh:mm",
                 // range: [0, 1],
-                  ticks:[0,3,6,9,12,15,18,21,24],
-                 tickCount: 25,
+                    ticks:[6,9,12,15,18,21,24],
+                //  tickCount: 25,
                  max: 24,
-                 min: 0,
+                min: 6,
                  formatter: function formatter(ivalue) {
                    return ivalue>=10?ivalue+':00':'0'+ivalue+':00'
                     //  return ivalue
@@ -505,13 +555,29 @@ moveTop:0,
       //   legend.setItems(chart3.getLegendItems().country);
       // }
     //});
+      // chart3.area().position('day*value').shape('smooth');
     chart3.line().position('day*value').color('type', function(val) {
+      if (val === '上班时间') {
+        return '#dddddd';
+      }else
+      if (val === '下班时间') {
+        return '#dddddd';
+      }else
       if (val === '上班') {
         return '#f25e87';
       }else{
         return '#c789e6'
       }
-    });
+    }).shape('smooth').style('type',{ 
+    lineWidth(val) {
+    if (val === '上班时间'||val === '下班时间') {
+      return 1;
+    }
+    // return null;
+  }
+   
+
+      });
             chart3.render();
           } else {
           }
@@ -604,5 +670,12 @@ moveTop:0,
       // width:100% !important;
     }
   }
+  .van-popup{
+    // transform: none;
+    // bottom: 0;
+    // left:0;
+    // width:100%;
+  }
+
 }
 </style>

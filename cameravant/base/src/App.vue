@@ -7,7 +7,7 @@
     export default {
       created() {
         window.sessionStorage.setItem('appid', 'wxac2693b644b34e48');
-        window.sessionStorage.setItem('openid', 'ooiMn1pH2LsgHSeKcwRjprA9e300');
+        //window.sessionStorage.setItem('openid', 'ooiMn1pH2LsgHSeKcwRjprA9e300');
       }
     }
   </script>

@@ -7,9 +7,9 @@
                         :key="index">
                        
                         <div class="left">
-                                      <p class="user-title"> {{item.name}}</p>
+                                      <p class="user-title"> {{item.nickname}}</p>
                              <!-- <p class="user-title"> {{item.name}} <van-tag round :class="item.user_sex?'man':'girl'">{{item.user_sex?'男':'女'}}</van-tag></p> -->
-                            <span style="height:20px;" class="name ellipsis">上海</span>
+                            <span style="height:20px;" class="name ellipsis">{{item.city}}</span>
                             <!-- <span class="time ellipsis">{{item.device_code}}</span>  active: item.user_sex, 'girl': item.user_sex  -->
                         </div>
                         <div class="middle">
@@ -108,7 +108,7 @@
                 }else{
                     data.openId=window.sessionStorage.getItem('openid');
                 }
-                this.axios.post("http://172.28.5.11:9081/user/sharelist", {
+                this.axios.post(this.api.userSharelist, {
                     data
                 }).then(res => {
                     if (res.result === "true") {               
@@ -131,7 +131,7 @@
                      let data = {};
                       data.openId=window.sessionStorage.getItem('openid');
                     data.id=item.id;
-                    this.axios.post("http://172.28.5.11:9081/user/unbindshare", {data }).
+                    this.axios.post(this.api.userUnbindshare, {data }).
                     then((res)=>{
                         if(res.result=="true"){
                             this.myDevices.splice(index,1);

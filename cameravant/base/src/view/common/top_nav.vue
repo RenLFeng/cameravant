@@ -8,11 +8,15 @@
             <div class="right"><span class="iconfont icon-tianjia" @click="goDeviceAdd"></span></div>
         </div>
         <van-popup v-model="topNavShow" position="top" class="top_nav">
+            <!-- <van-cell title="设备列表" is-link to="deviceList" />
+            <van-cell title="设备添加" is-link to="deviceAdd" /> -->
+           
             <van-cell title="共享授权" is-link to="shareAccount" />
-             <van-cell title="授权列表" is-link to="sqList" />
-            <van-cell title="用户添加" is-link to="userAdd" />
+            <van-cell title="授权列表" is-link to="sqList" />
+            <van-cell title="添加用户" is-link to="userAdd" />
             <van-cell title="用户列表" is-link to="userList" />
             <van-cell title="PC访问授权" is-link to="userAuth" />
+        
         </van-popup>
     </div>
 </template>
