@@ -204,34 +204,49 @@
            sexs:[
                 {
                   currentRateSex0:0,
+                  img_sum:0,
+                  sex:"男"
                 },
                  {
                   currentRateSex1:0,
-
+                    img_sum:0,
+                  sex:"女"
                 }
            ],
           ages:[
                 {
                     currentRateAge0:0,
+                    agegroup: "18岁以下",
+                    img_sum: 0
   
                 },
                  {
                      currentRateAge1:0,
+                      agegroup: "19-25",
+                    img_sum: 0
                 },
                  {
                      currentRateAge2:0,
+                      agegroup: "26-35",
+                    img_sum: 0
                  },
                  {
                      currentRateAge3:0,
+                      agegroup: "36-45",
+                    img_sum: 0
 
                 },
                 
                  {
                      currentRateAge4:0,
+                      agegroup: "46-55",
+                    img_sum: 0
 
                 },
                  {
                      currentRateAge5:0,
+                      agegroup: "56岁以上",
+                    img_sum: 0
 
                 }
           ]
@@ -288,7 +303,7 @@
         ],
         timetype: {
           text: "本周",
-          value: '1'
+          value: '0'
         },
         tabRangeTypeSelected: 0,
         deviceList: [],
@@ -327,7 +342,7 @@
           } else {
             data.deviceIds = this.deviceIds;
           }
-          data.timeType = that.timetype.value || '1';
+          data.timeType = that.timetype.value || '0';
           if (this.selectedDateTime[1]) {
             window.console.log('132 ...');
             if (data.timeType === '4') {
@@ -389,9 +404,12 @@
          idArr[0]= item.device_id
            this.deviceidsArr=idArr;  
          }
+         console.log(this.deviceidsArr);
          this.clearChartFn();
         this.clearChartFn();
         this.initFn(this.tabRangeTypeSelected);
+        console.log(this.deviceidsArr);
+        this.newImglist(this.deviceidsArr)
       },
       // 初始所有设备选中样式
       selectFalseFn(item){
@@ -587,8 +605,8 @@
             this.deviceList = res.content;
             
             this.deviceIds = res.content[0].deviceIds;
-
             this.allDeviceListOb=data.content;
+            //  this.allDeviceListOb=[];
             this.Mydevicetypes= this.Mydevicetypes.concat(this.allDeviceListOb[0].devices);
             this.Ejdevicetypes=  this.Ejdevicetypes.concat(this.allDeviceListOb[1].devices);
          
@@ -602,7 +620,8 @@
                this.Ejdevicetypes[0].device_id=this.allDeviceListOb[1].deviceIds;
             }
 
-            this.initFn(this.tabRangeTypeSelected)
+            this.initFn(this.tabRangeTypeSelected);
+            
             this.getPageData(this.deviceIds);
           } else {
             that.$toast(res.message);
@@ -1154,8 +1173,11 @@
         this.deviceSelectPop = false;
       },
       timeTypeSelectConfirm(value) {
+        // alert(value)
         this.clearChartFn();
         this.initFn(value);
+        // this.newImglist(this.deviceidsArr);
+        // this.tabRangeTypeSelected=value;
         let tmp = JSON.stringify(this.timetype);
         this.timetype = this.rangeTypes[value];
         if (tmp !== JSON.stringify(value)) {
@@ -1163,7 +1185,7 @@
           if (value.value === '4') {
             this.dateTimePop = true;
           }
-          this.getPageData();
+          // this.getPageData();
         }
         this.timeTypeSelectPop = false;
       },
