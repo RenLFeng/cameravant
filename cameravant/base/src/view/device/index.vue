@@ -25,7 +25,7 @@
     <!-- 性别区分 -->
     <div class="circle_box">
       <ul class="sex_contect">
-         <li :class="index==1?'margin_top':''" v-for="(item,index) in circleData.sexs" :key="index">
+         <!-- <li :class="index==1?'margin_top':''" v-for="(item,index) in circleData.sexs" :key="index">
          <van-circle
         v-model="item['currentRateSex'+index]"
         :color="item.sex=='男'?'#22CED4':'#FD3FB2'"
@@ -37,12 +37,27 @@
         :stroke-width="50"
         :text="item['currentRateSex'+index].toFixed(0) + '%'"
       /><span>{{item.sex}}</span>
+      </li> -->
+      <li  style="padding-bottom: 30px;"><span style="font-size:14px;">总人数</span><span style="font-size:25px;font-weight: bolder;">2678</span></li>
+      <li class="sex_icon_box sex_item">
+        <ul class="" style="    margin-right: 10px;">
+          <li>
+            <span><van-icon name="user-o" />1</span>
+            <span>26%</span>
+          </li>
+        </ul>
+         <ul>
+          <li><span><van-icon name="user-o" />2</span><span>78%</span></li>
+        </ul>
       </li>
   </ul>
-   <!-- :text="item.img_sum+'%'" -->
- 
+  
 <!-- 年龄区分 -->
-      <ul class="age_content">
+
+    <div class="age_content bar">
+    <canvas id="mountNode"></canvas>
+  </div>
+      <!-- <ul class="age_content">
           <li :class="index>2?'margin_top':''" v-for="(item,index) in circleData.ages" :key="index">
          <van-circle
        v-model="item['currentRateAge'+index]"
@@ -56,8 +71,12 @@
        :text="item['currentRateAge'+index].toFixed(0) + '%'"
       /><span>{{item.agegroup}}</span> 
     </li> 
-      </ul>
+      </ul> -->
+
+
     </div>
+
+
      <div class="itme-box device_chart" id="canvas3-box">
       <p class="tit">
         <i class="i"></i>客流量分析曲线
@@ -162,6 +181,7 @@
 
 <script>
 // const format = rate => Math.min(Math.max(rate, 0), 100);
+let chart=void 0;
   import {
     Circle ,
     Cell,
@@ -328,7 +348,7 @@
         legendNameArr: [['本周', '上周'], ['本月', '上月'], ['本年', '上年']],
 
         showDeviceList:false,
-        concut:1
+        concut:1,
       };
     },
     computed: {
@@ -362,11 +382,16 @@
     },
     mounted() {
     },
+    destroyed(){
+      chart.destroy();
+      chart=null;
+  },
     methods: {
       //初始化图表数据
       initFn(index){
               this.selectAgeSexFn(index);
               this.drw(index);
+              this.sexChartFn();
       },
     //展开设备列表
       showDeviceListFn(){
@@ -386,7 +411,6 @@
          idArr[0]= item.device_id
            this.deviceidsArr=idArr;  
          }
-         this.clearChartFn();
          this.initFn(this.tabRangeTypeSelected);
       },
       //选择 '共享' 设备类型
@@ -405,8 +429,6 @@
            this.deviceidsArr=idArr;  
          }
          console.log(this.deviceidsArr);
-         this.clearChartFn();
-        this.clearChartFn();
         this.initFn(this.tabRangeTypeSelected);
         console.log(this.deviceidsArr);
         this.newImglist(this.deviceidsArr)
@@ -422,7 +444,183 @@
                this.showDeviceList=false;
                this.deviceselectEd=item;
       },
-      //性别，年龄数据
+//年龄分布图表
+ sexChartFn(){
+
+  var data = [{
+    year: '18岁以下',
+    sales: 38
+  }, {
+    year: '19-25',
+    sales: 52
+  }, {
+    year: '26-35',
+    sales: 61
+  }, {
+    year: '36-45',
+    sales: 145
+  },{
+    year: '56岁以上',
+    sales: 145
+  }];
+  var chart2 = new F2.Chart({
+    id: 'mountNode',
+    pixelRatio: window.devicePixelRatio
+  });
+
+  chart2.source(data, {
+    sales: {
+      tickCount: 5
+    }
+  });
+  chart2.tooltip({
+    showItemMarker: false,
+    onShow: function onShow(ev) {
+      var items = ev.items;
+      items[0].name = null;
+      items[0].name = items[0].title;
+      items[0].value = items[0].value+'人';
+    }
+  });
+   chart2.guide().text({
+        // top:true,
+        position: ['min', 'max'],
+        content: '客户年龄分布',
+        style: {
+            fill: '#6E7D8C', // 点的填充颜色
+          textBaseline: 'middle',
+          textAlign: 'start',
+          fontSize:14
+        },
+         offsetY: -35,
+        offsetX: -20
+    });
+  chart2.legend({
+      custom:true
+    })
+  chart2.interval().position('year*sales').style({
+  radius:[5]
+  }).color('year',function(val){
+      switch(val){
+        case '18岁以下': return '#5A7BEF';
+        break;
+        case '19-25': return '#F15887';
+        break;
+        case '26-35': return '#4048EF';
+        break;
+        case '36-45': return '#2DC9EB';
+        break;
+        case '56岁以上': return '#FA9CBC';
+        break;
+        default: return '5A7BEF'
+      }
+  }).size(10);
+  chart2.render();
+
+
+
+
+
+
+
+
+
+
+
+
+  // //  百度echarts ，初始化echarts实例
+  //    var myChart = echarts.init(document.getElementById('_top'));
+
+  //    // 指定图表的配置项和数据
+  //       var option = {
+  //           color: ['#3398DB'],
+  //   tooltip : {
+  //       trigger: 'axis',
+  //       axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+  //           type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+  //       }
+  //   },
+  //   grid: {
+  //       left: '3%',
+  //       right: '4%',
+  //       bottom: '3%',
+  //       containLabel: true
+  //   },
+  //   xAxis : [
+  //       {
+  //           type : 'category',
+  //           data : ['0-18', '19-25', '26-35', '36-45', '46以上',],
+  //           axisTick: {
+  //               alignWithLabel: true
+  //           },
+  //            axisLine:{              
+  //                   show:false, 
+  //             },
+            
+             
+  //       }
+  //   ],
+  //   yAxis : [
+  //       {
+  //           type : 'value',
+  //            axisLine:{              
+  //                   show:false, 
+  //             }
+  //       }
+  //   ],
+
+  //           //------------ 内容数据  -----------------
+  //           series: [
+  //               {
+  //                   name: '销量',             //---系列名称
+  //                   type: 'bar',                //---类型
+  //                   legendHoverLink:true,       //---是否启用图例 hover 时的联动高亮
+  //                   label:{                     //---图形上的文本标签
+  //                       show:false,
+  //                       position:'insideTop',   //---相对位置
+  //                       rotate:0,               //---旋转角度
+  //                       color:'#eee',
+  //                   },
+  //                   itemStyle:{                 //---图形形状
+  //                      normal: {
+  //                   barBorderRadius: 8,
+  //                   //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
+  //                   color: function (params) {
+  //                       var colorList = [
+  //                           ['#4048EF', '#5A7BEF'],
+  //                           ['#F15887', '#FE9B86'],
+  //                           ['#4048EF', '#5A7BEF'],
+  //                           ['#2DC9EB', '#14D2B8'],
+  //                           ['#FA9CBC', '#F36387'],
+  //                       ];
+  //                       var index = params.dataIndex;
+  //                       if (params.dataIndex >= colorList.length) {
+  //                           index = params.dataIndex - colorList.length;
+  //                       }
+  //                       return new echarts.graphic.LinearGradient(0, 0, 0, 1,
+  //                           [{
+  //                                   offset: 0,
+  //                                   color: colorList[index][0]
+  //                               },
+  //                               {
+  //                                   offset: 1,
+  //                                   color: colorList[index][1]
+  //                               }
+  //                           ]);
+  //                   }
+  //               },
+  //                   },
+  //                   barWidth:'20',              //---柱形宽度
+  //                   barCategoryGap:'20%',       //---柱形间距
+  //                   data: [3020, 4800, 3600, 6050, 4320]
+  //               }
+  //           ]
+  //       };
+
+  //       // 使用刚指定的配置项和数据显示图表。
+  //       myChart.setOption(option);
+},
+//性别，年龄数据
       selectAgeSexFn(index){
          let data={
            "deviceIds":this.deviceidsArr,
@@ -486,7 +684,10 @@
             this.drw1Data = res.content;
             if(this.drw1Data.length=='') this.showCanvas=true;
             // console.log(this.drw1Data);
-            const chart = new F2.Chart({
+            console.log(chart);
+            if(!chart){
+
+            chart = new F2.Chart({
                id: "myChart3"+this.concut,
               pixelRatio: window.devicePixelRatio
             });
@@ -495,14 +696,14 @@
                 // type: 'cat',
                 tickCount: 8,
                 // min: 1,
-                //  ticks:[0,2,4,6,8,10,12,14],
+                //  ticks:[1,4,7,10,13,16,19,21,24.27,31],
               },
               img_sum: {
                 // type: 'timeCat',
                 // mask: "hh:mm",
                 // range: [0, 1],
                 // ticks:[0,2,4,6,8,10,12,14,16,18,20,22,24],
-                tickCount:3 ,
+                tickCount:5,
                 // max: 100,
                 min: 0,
                 formatter: function formatter(ivalue) {
@@ -530,12 +731,35 @@
                 return textCfg;
               }
             });
+              // chart.guide().text({
+              //   // top:true,
+              //   position: ['min', 'max'],
+              //   content: '客流量分析曲线',
+              //   style: {
+              //      fill: '#666', // 点的填充颜色
+              //     textBaseline: 'middle',
+              //     textAlign: 'start'
+              //   },
+              //   offsetY: -35,
+              //   offsetX: -15
+              // });
+
+              //图例
+              chart.legend({
+                align:'right',
+              // position: 'right',
+              itemWidth: 30,
+                //  offsetY: 0,
+                // offsetX: 150
+            });
              chart.tooltip({
               showCrosshairs: true,
+              showXTip:true,
               onShow: function onShow(ev) {
                 console.log(ev);                             
               }
             });
+            //陰影chart.area()
             // chart.area().position('name*value').color('type').shape('')
             // chart
             //   .line()
@@ -553,11 +777,13 @@
       if (val === '今日'||val === '本周'||val === '本月'||val === '本年') {
         return '#7A62FF';
       }else{
-        return '#4ACDD6'
+        return 'rgba(73,203,212,.3)'
       }
     }).shape('smooth');
-              // chart.interaction('pan');
-            chart.render();
+    chart.render();
+            }else{
+               chart.changeData(this.drw1Data);
+            }
           } else {
             console.log("err");
           }
@@ -603,7 +829,6 @@
           if (res.result === "true") {
              let data=res;
             this.deviceList = res.content;
-            
             this.deviceIds = res.content[0].deviceIds;
             this.allDeviceListOb=data.content;
             //  this.allDeviceListOb=[];
@@ -1172,9 +1397,9 @@
       deviceSelectCancel() {
         this.deviceSelectPop = false;
       },
+      //选择显示时间
       timeTypeSelectConfirm(value) {
         // alert(value)
-        this.clearChartFn();
         this.initFn(value);
         // this.newImglist(this.deviceidsArr);
         // this.tabRangeTypeSelected=value;
@@ -1234,6 +1459,7 @@
           }
         })
       },
+
     }
   };
 </script>
@@ -1269,13 +1495,16 @@
     }
     .circle_box{
           margin: 10px;
+              height: 160px;
+    margin-bottom: 30px;
           // border-radius: 15px;
           // padding: 10px;
           // box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
-      ul{
+      .sex_contect,.bar{
          padding: 10px 0;
           box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
              border-radius: 15px;
+             height: 100%;
         li{
           text-align: center;
           span{
@@ -1287,18 +1516,32 @@
           &.margin_top{
             margin-top: 10px;
           }
+        
         }
       }
       margin-top: 20px;
       .sex_contect{
-            width: 28%;
-             float: left;
-         
-           
+            width: 24%;
+            float: left;
+          //  height: 5.18rem !important;
+             .sex_icon_box{
+               ul{
+                display: inline-block;
+               }
+          }
+          .sex_item{
+            li{
+              span{
+                 font-size: 16px;
+              }
+             
+            }
+          }
       }
       .age_content{
-        width: 70%;
-          float: right;
+        width: 74%;
+        float: right;
+        // height: 5.18rem !important;
         li{
           // float: left;
              width: 33.3%;
@@ -1590,13 +1833,6 @@
       // width:100% !important;
     }
   }
-  .van-tab{
-    // line-height: 30px !important;
-  }
-  .van-tab--active{
-    // height: 30px !important;
-    // background: linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
-  }
 }
 </style>
 <style>
@@ -1616,39 +1852,8 @@
    border-color:#999 transparent  transparent;
    margin-left: 6px;
 }
-.van-tab--active{
-  /* height: 30px !important; */
+#mountNode{
+  width: 100% !important;
+  height: 100%!important;
 }
-.van-tab{
-  /* line-height: 29px!important; */
-}
-.van-tab.van-tab--active{
-  /* height: 30px!important; */
-}
-.device_box .van-tab{
-    /* line-height: 38px; */
-}
-/* .device_box .van-tabs__content{
-    margin-top: 10px;
-} */
-/* .device_box .van-tabs__wrap{
-    padding:10px 15px 0;
-} */
-.device_box .van-tab--active {
-    /* background: -webkit-linear-gradient(135deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
-    background: linear-gradient(315deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);
-    color: #fff;
-    border-radius: 0.8rem;
-    width: 50%;
-    height: 80%;
-    margin: 0 auto; */
-    /* line-height: 3px; */
-}
-/* .device_box .van-tabs__line{
-            display: none;
-        } */
-/* .device_box .feedback_list li .left img[data-v-487cc491]{
-    border-radius: 10px;
-        vertical-align: middle;
-} */
 </style>

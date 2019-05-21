@@ -110,10 +110,11 @@ const ajaxUrl = {
     aiUserlist:'/server/ai/userlist',//获取用户列表
     aiDeleuser:'/server/ai/deleuser',//删除用户
     aiUpdateuser:'/server/ai/updateuser',//更新用户
-
+    //考勤分析接口
     analysisDay:'/server/analysis/day',//考勤分析
     analysisTime:'/server/analysis/times',//今日活跃度
     analysisUser:'/server/analysis/user',//考勤时间
+    analysisShareuser:'/server/analysis/shareuser',//获取被分享的列表
 
     statiStat:'/server/stati/stat',//device性别，年龄数据
     statiStatcompare:'/server/stati/statcompare',//device客流量分析曲线

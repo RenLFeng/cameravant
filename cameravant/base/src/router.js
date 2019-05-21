@@ -43,7 +43,7 @@ const routes = [
     name: 'device',
     component: () => import('./view/device'),
     meta: {
-      title: '实时看板'
+      title: '客流分析'
     }
   },
   {

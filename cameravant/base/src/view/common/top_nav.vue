@@ -1,11 +1,12 @@
 <template>
     <div class="header_common">
         <div class="flex">
-            <div class="left"><span class="iconfont icon-ai221" @click="showNav"></span></div>
+                      <div class="right"><span class="iconfont icon-tianjia" @click="goDeviceAdd"></span></div>
+  
             <div class="middle">
                 <slot></slot>
             </div>
-            <div class="right"><span class="iconfont icon-tianjia" @click="goDeviceAdd"></span></div>
+            <div class="left"><span class="iconfont icon-ai221" @click="showNav"></span></div>
         </div>
         <van-popup v-model="topNavShow" position="top" class="top_nav">
             <!-- <van-cell title="设备列表" is-link to="deviceList" />
@@ -48,7 +49,14 @@
         },
         methods: {
             showNav() {
-                this.topNavShow = true;
+                  //跳转提交反馈页面
+                this.$router.push({
+                    name: 'shareAccount',
+                    query: {
+                        openid: window.sessionStorage.getItem('openid') || this.$route.query['openid'],
+                    }
+                })
+                // this.topNavShow = true;
             },
             goDeviceAdd() {
                 //跳转提交反馈页面

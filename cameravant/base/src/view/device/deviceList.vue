@@ -76,9 +76,9 @@
                 <van-button type="default" size="large" @click="submit" class="btn">提交</van-button>
             </div>
         </van-popup>
-        <!-- <div class="add_device" @click="goDeviceAdd">
+        <div class="add_device" @click="goDeviceAdd">
             <span class="iconfont icon-tianjiashebei"></span>添加设备
-        </div> -->
+        </div>
     </div>
     <empty v-else>
         <span>暂无设备，先去<span class="blue" @click="goDeviceAdd">添加设备</span>吧~</span>
@@ -169,25 +169,7 @@
                     if (res.result === "true") {
                         that.deviceList = res.content;
                         that.myDevices = res.content[0].devices;
-                        
-                        let dat=[
-                            {
-                               device_inst_addr:"sk",
-                               device_addtime: "2019-04-19 15:17:52"
-                            },
-                             {
-                               device_inst_addr:"sk2",
-                               device_addtime: "2019-04-19 15:17:52"
-                            },
-                        ]
-                        that.myDevices=that.myDevices.concat(dat);
-                        console.log(that.myDevices);
                         that.otherDevices = res.content[1].devices;
-                         that.otherDevices=that.myDevices.concat({
-                               device_inst_addr:"sk3",
-                               device_addtime: "2019-04-19 15:17:52"
-                            });
-
                     } else {
                         that.$toast(res.message);
                     }
