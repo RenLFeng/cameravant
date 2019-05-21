@@ -38,7 +38,7 @@
         :text="item['currentRateSex'+index].toFixed(0) + '%'"
       /><span>{{item.sex}}</span>
       </li> -->
-      <li  style="padding-bottom: 30px;"><span style="font-size:14px;">总人数</span><span style="font-size:25px;font-weight: bolder;">2678</span></li>
+      <li  style="padding-bottom: 25px;"><span style="font-size:14px;">总人数</span><span style="font-size:25px;font-weight: bolder;">2678</span></li>
       <li class="sex_icon_box sex_item">
         <ul class="" style="    margin-right: 10px;">
           <li>
@@ -79,7 +79,7 @@
 
      <div class="itme-box device_chart" id="canvas3-box">
       <p class="tit">
-        <i class="i"></i>客流量分析曲线
+        <i class="i"></i>客流分析曲线
       </p>
       <canvas  :id="`myChart3${concut}`" width height="200px"></canvas>
       <span class="not-data" v-if="drw1Data==''&& showCanvas">暂无分析数据...</span>
@@ -1495,7 +1495,7 @@ let chart=void 0;
     }
     .circle_box{
           margin: 10px;
-              height: 160px;
+              height: 150px;
     margin-bottom: 30px;
           // border-radius: 15px;
           // padding: 10px;
