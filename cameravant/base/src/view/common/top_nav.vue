@@ -6,7 +6,10 @@
             <div class="middle">
                 <slot></slot>
             </div>
-            <div class="left"><span class="iconfont icon-ai221" @click="showNav"></span></div>
+            <div class="left">
+                <!-- <span class="iconfont icon-ai221" @click="showNav"></span> -->
+                 <span class="fenxiang" @click="showNav"></span>
+            </div>
         </div>
         <van-popup v-model="topNavShow" position="top" class="top_nav">
             <!-- <van-cell title="设备列表" is-link to="deviceList" />
@@ -83,6 +86,7 @@
         /* background-image: linear-gradient(-180deg, #29bdd9 0%, #276ace 60%); */
         .flex {
             align-items: center;
+           
         }
         .left,
         .right {
@@ -90,6 +94,15 @@
             padding:5px;
             box-sizing:border-box;
             text-align:left;
+        }
+        .left{
+             .fenxiang{
+                 display: inline-block;
+                 width: 18px;
+                 height: 18px;
+                 background: url(../../assets/fenxiang.png) no-repeat;
+                background-size: 100% 100%;
+            }
         }
         .right{
             text-align:right;
