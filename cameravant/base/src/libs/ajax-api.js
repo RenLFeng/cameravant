@@ -2,8 +2,8 @@
 // 接口
 const ajaxUrl = {
     baseURL: 'http://wx.isafeiot.com',//给特殊的接口$axios用
-    server:'http://wx.isafeiot.com',
-    // server:'http://172.28.5.11:9081',
+    // server:'http://wx.isafeiot.com',
+    server:'http://172.28.5.11:9081',
     //功能点
     login: '/face_pic_svr/login', // 登录接口
     logout: '/face_pic_svr/logout',//注销接口DELETE方法，而非get、post
@@ -78,7 +78,7 @@ const ajaxUrl = {
     //获取年龄分段统计☆
     ageStat:'/server/stati/agestat',
     //对比统计
-    newImglist:'/server/stati/imglist',
+    newImglist:'/server/stati/imagelist',
     //查询工厂列表☆
     getFactoryList:'/face_pic_svr/get_factory_list',
     //获取性别统计
@@ -93,7 +93,8 @@ const ajaxUrl = {
     wechatUnbind:'/server/wechat/unbind',//用户解绑设备
     wechatEditDevice:'/server/wechat/edit_device',//用户解绑设备
     statiComparestat:'/server/stati/comparestat',//对比统计
-    getCode:'/server/wechat/code',//通过code获取用户openID
+    // getCode:'/server/wechat/code',//通过code获取用户openID
+    getCode:'/server/wechat/getopenid',//通过code获取用户openID
 
     userBinduser:'/server/user/binduser',//分享绑定用户
     userSharecode:'/server/user/sharecode',//获取用户的账户授权码
@@ -116,8 +117,11 @@ const ajaxUrl = {
     analysisUser:'/server/analysis/user',//考勤时间
     analysisShareuser:'/server/analysis/shareuser',//获取被分享的列表
 
-    statiStat:'/server/stati/stat',//device性别，年龄数据
-    statiStatcompare:'/server/stati/statcompare',//device客流量分析曲线
+    statiStat:'/server/stati/vipstat',//device性别，年龄数据
+    statiStatcompare:'/server/stati/vipstatcompare',//device客流量分析曲线
+    statiUserperc:'/server/stati/userperc',//device客戶類型图(vip)
+
+
       
 }
 // 返回模块

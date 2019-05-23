@@ -38,7 +38,7 @@
         :text="item['currentRateSex'+index].toFixed(0) + '%'"
       /><span>{{item.sex}}</span>
       </li> -->
-      <li class="person_item"><span class="person_tit">总人数</span><span class="person_all" style="">{{allPerson}}</span></li>
+      <li class="person_item"><span class="person_tit">总人数</span><span class="person_all" style="">{{circleData.sexs[0].sum}}</span></li>
       <li class="sex_icon_box sex_item">
         <ul class="">
           <li>
@@ -64,41 +64,43 @@
       <p class="tit">
         <i class="i"></i>客流分析曲线
       </p>
-      <canvas  :id="`myChart3${concut}`" width height="200px"></canvas>
+      <canvas  :id="`myChart3${concut}`" width height="200px">
+        
+      </canvas>
       <span class="not-data" v-if="!drw1Data.length && showCanvas">暂无分析数据...</span>
     </div>
     <!-- //客户类型 circle-->
     <div class="customer_box">
        <ul class="item_left">
-          <li v-for="(item,index) in circleData.ages" v-if="index<3" :key="index">
+          <li v-for="(item,index) in customer[0]"  :key="index">
          <van-circle
        v-model="item['currentRateAge'+index]"
         :color="index==0?'#FA878D':index==1?'#5068EF':index==2?'#8F6AFF':index==3?'#15D2B9':index==4?'#685CFF':index==5?'#FF9E76':index==6?'':''"
         fill="#fff"
-        :rate="item.img_sum"
+        :rate="item.count"
         size="55px"
         layer-color="#E0E4EB"
         :speed="100"
         :stroke-width="50"
        :text="item['currentRateAge'+index].toFixed(0) + '%'"
       />
-      <span>{{item.agegroup}}</span> 
+      <span>{{item.name}}</span> 
     </li> 
       </ul>
       <ul class="item_right">
-           <li v-for="(item,index) in circleData.ages" v-if="index==4" :key="index">
+           <li v-for="(item,index) in customer[1]"  :key="index">
          <van-circle
        v-model="item['currentRateAge'+index]"
         :color="index==0?'#4049EF':index==1?'#FB8C87':index==2?'#414AEF':index==3?'#F780A2':index==4?'#685CFF':index==5?'#FF9E76':index==6?'':''"
         fill="#fff"
-        :rate="item.img_sum"
+        :rate="item.count"
         size="55px"
         layer-color="#E0E4EB"
         :speed="100"
         :stroke-width="50"
        :text="item['currentRateAge'+index].toFixed(0) + '%'"
       />
-      <span>{{item.agegroup}}</span> 
+      <span>{{item.name}}</span> 
       </li>
       </ul>
     </div>
@@ -148,27 +150,41 @@
 <!-- +++++++++++++++++++++++++ -->
 
 
-<!-- 
-   <van-swipe  :autoplay="3000" class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
-      <van-swipe-item v-html="imgHtmlEl"  v-for="(item,index) in 3" :key="index"></van-swipe-item>
-    </van-swipe> -->
+
+<!-- 备注编辑 -->
+<van-popup v-model="showWompile">
+  <div class="wompile_box">
+    <h3>添加备注</h3>
+    <div class="wompile_info">
+      <p class="">苏通 <span>男&nbsp;28岁</span></p>
+      <textarea v-model="textarea" name="" id="" cols="" rows="">不懂V塑说撒郭德纲</textarea>
+    </div>
+    <div class="history">
+      <p>历史记录</p>
+      <ul>
+        <li>
+          <p class="text">共消费3900，三件，消费能力偏上</p>
+          <p class="time">2019-05-12</p>  
+        </li>
+         <li>
+          <p class="text">共消费4900，2件，消费能力偏上，给孩子买东西大手比</p>
+          <p class="time">2019-05-12</p>  
+        </li>
+      </ul>      
+    </div>
+  </div>
+  <van-button round type="danger" @click="submitCompileFn()">确认</van-button>
+</van-popup>
 
 
-
-
-   <van-swipe :autoplay="3000" class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
+   <van-swipe :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
       <van-swipe-item :key="index" v-for="(image, index) in imgList">
-        <div class="img_container">
-          <img :src="imgList[0].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[0].imgSex?'男':'女'}}　{{imgList[0].imgAge}}<br>{{imgList[0].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-        <div class="img_container">
-          <img :src="imgList[1].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[1].imgSex?'男':'女'}}　{{imgList[1].imgAge}}<br>{{imgList[1].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-        <div class="img_container">
-          <img :src="imgList[2].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[2].imgSex?'男':'女'}}　{{imgList[2].imgAge}}<br>{{imgList[2].imgDatetime.replace(/(\S)*\s/,"")}}</p>
+        <div @click="compileFn(item)" class="img_container" v-for="(item,itmIndex) in image" :key="itmIndex" v-if="item.imgMd5">
+          <img :src="item.imgMd5+'?w=400&h=400'" class="img" />
+          <p class="note">
+            {{item.imgSex?'男':'女'}}　{{item.imgAge}}岁
+            <span>{{item.imgDatetime.replace(/(\S)*\s/,"")}}</span>
+          </p>
         </div>
       </van-swipe-item>
     </van-swipe>
@@ -237,7 +253,7 @@ let chart2=void 0;
     Popup,
     DatetimePicker,
     Field,
-    Tab, Tabs,Icon,
+    Tab, Tabs,Icon,Loading,Button
   } from 'vant';
   import echarts from "echarts";
   import F2 from "@antv/f2/lib/index-all";
@@ -247,6 +263,7 @@ let chart2=void 0;
 
   export default {
     components: {
+       [Button.name]: Button,
       [Circle.name]: Circle,
       [Cell.name]: Cell,
       [Swipe.name]: Swipe,
@@ -260,16 +277,20 @@ let chart2=void 0;
       [Field.name]: Field,
       [Tab.name]: Tab,
       [Tabs.name]: Tabs,
-      [Icon.name]: Icon
+      [Icon.name]: Icon,
+       [Loading.name]: Loading
     },
 
     data() {
       return {
+        textarea:"",
+        showWompile:false,
+        customer_info:{},
         imgListIndex:0,
         imgHtmlEl:"",
         showCanvas:false,
          drw1Data: [],
-         allPerson:2678,
+         allPerson:0,
          circleData:{
            sexs:[
                 {
@@ -347,7 +368,7 @@ let chart2=void 0;
         customerCountShow: false,
         imgstatPerhourShow: false,
         imgList: [],
-        imgListShow: false,
+        imgListShow: true,
         deviceSelectPop: false,
         timeTypeSelectPop: false,
         columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
@@ -399,8 +420,34 @@ let chart2=void 0;
 
         showDeviceList:false,
         concut:1,
-      };
-    },
+        customer:[
+            [
+                {
+                  "currentRateAge0":0,
+                  "name": "新客",
+                  "count": 0
+                },
+                {
+                  "currentRateAge1":0,
+                  "name": "熟客",
+                  "count": 0
+                },
+                {
+                  "currentRateAge2":0,
+                  "name": "VIP占比",
+                  "count": 0
+                }
+            ],
+            [
+                  {
+                    "currentRateAge0":0,
+                    "name": "颜值",
+                    "count": 0
+                  }
+            ]
+   ]
+   };
+},
     computed: {
       selectData: {
         get: function () {
@@ -444,6 +491,43 @@ let chart2=void 0;
               this.selectAgeSexFn(index);
               this.drw(index);
       },
+      //get客户类型
+      getCustomerFn(openid,devicesId){
+        console.log(this.openid);
+          let data={
+              "deviceIds":devicesId ,
+              "openId": openid
+              }
+         this.axios.post(this.api.statiUserperc, {
+          data
+        }).then((res)=>{
+          if(res.result=="true"&&res.content.length){
+            let resData=res.content;
+            for(let i=0;i<resData[0].length;i++){
+                this.customer[0][i].name=resData[0][i].name;
+              this.customer[0][i].count=resData[0][i].count;
+            }
+              this.customer[1][0].name=resData[1][0].name;
+              this.customer[1][0].count=resData[1][0].count;
+          }else{
+
+          }
+        })
+      },
+      //图片编辑备注
+      compileFn(item){
+        this.showWompile=true
+        console.log(item);
+      },
+      // 提交备注
+      submitCompileFn(){
+          if(!this.textarea){
+            Toast('总得写点什么吧~~~');
+            return;
+          }
+          Toast('谢谢，你会记得我的~~~');
+           this.showWompile=false;
+      },
     //展开设备列表
       showDeviceListFn(){
         this.showDeviceList=!this.showDeviceList;
@@ -463,6 +547,7 @@ let chart2=void 0;
            this.deviceidsArr=idArr;  
          }
          this.initFn(this.tabRangeTypeSelected);
+        this.getCustomerFn(this.openid, this.deviceidsArr)
       },
       //选择 '共享' 设备类型
       selectTypeEjFn(item,index){
@@ -481,7 +566,7 @@ let chart2=void 0;
          }
          console.log(this.deviceidsArr);
         this.initFn(this.tabRangeTypeSelected);
-        console.log(this.deviceidsArr);
+        this.getCustomerFn(this.openid,this.deviceidsArr)
         // this.newImglist(this.deviceidsArr)
       },
       // 初始所有设备选中样式
@@ -589,17 +674,18 @@ let chart2=void 0;
         }).then(res=>{
           if (res.result === "true") {
               let resData = res.content;
-             resData[1].splice(0,1)
-             
             for(let i=0;i<resData[0].length;i++){
                 that.circleData.sexs[i].img_sum=resData[0][i].img_sum;
                  that.circleData.sexs[i].sex=resData[0][i].sex;
+                  that.circleData.sexs[i].sum=resData[0][i].sum;
+
             }
              for(let i=0;i<resData[1].length;i++){
                 that.circleData.ages[i].img_sum=resData[1][i].img_sum;
                  that.circleData.ages[i].agegroup=resData[1][i].agegroup;
             }
-              
+            
+             
             this.sexChartFn(that.circleData.ages);
           }else{
           }
@@ -742,6 +828,7 @@ let chart2=void 0;
       //拿openid
       getCodeInit() {
         this.getCode(this.api.server + '/#/device').then(resolve => {
+          console.log(resolve);
           this.openid = resolve;
           this.getDeviceList(resolve);
         });
@@ -811,6 +898,7 @@ let chart2=void 0;
          }
             this.initFn(this.tabRangeTypeSelected);
             this.getPageData(this.deviceidsArr);
+            this.getCustomerFn(this.openid,this.deviceidsArr)
           } else {
             that.$toast(res.message);
           }
@@ -969,13 +1057,41 @@ let chart2=void 0;
           data
         }).then(res => {
           if (res.result == "true" && Object.keys(res.content).length != 0) {
-            const resData = res.content;
-            that.imgList = resData || [];
-            if(that.imgList.length==9){
-              that.imgListShow = true;
-            }else{
-               that.imgListShow = false;
+            let resData = res.content;
+            let lenAll=resData.length;
+             let len;
+            if(lenAll%4){
+              len=4-lenAll%4;
+              for(let i=0;i<len;i++){
+                resData=[...resData,
+                  {
+                    imgMd5:"",
+                    imgSex:"",
+                    imgAge:"",
+                    imgDatetime:"",
+                  }
+                ]
+              }
+          lenAll=lenAll+len;
             }
+            let arrTem=new Array(lenAll/4);
+            for(let i=0;i<arrTem.length;i++){
+                         let arr=[];
+                      for(let j=that.imgListIndex;j<that.imgListIndex+4;j++){
+                        (function(){
+                            arr.push(resData[j]);
+                               arrTem[i]=arr;
+                        })();
+                      }
+                      that.imgListIndex+=4;
+            }
+            that.imgList = arrTem || [];
+            console.log(that.imgList);
+            // if(that.imgList.length==9){
+            //   that.imgListShow = true;
+            // }else{
+            //    that.imgListShow = false;
+            // }
           } else {
             that.imgListShow = false;
           }
@@ -1724,10 +1840,16 @@ let chart2=void 0;
     box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
     border-radius: 15px;
     margin: 0 auto;
+    text-align: left;
+    .van-swipe__track::after{
+      display: block;
+      content: "";
+      clear: both;
+    }
       .img_container {
         display: inline-block;
-        width: calc(~'33% - 10px');
-        height: 33vw;
+        width: calc(~'26% - 10px');
+        height: 25vw;
         margin: 2px;
         position: relative;
         .img {
@@ -1736,21 +1858,23 @@ let chart2=void 0;
           border-radius: 10px;
         }
         .note {
-          position: absolute;
-          bottom: -3px;
-          left: 2px;
-          width: 100%;
-          background: rgba(0, 0, 0, 0.5);
-          height: 30px;
-          padding: 3px 0;
-          line-height: 15px;
-          font-size: 12px;
-          text-align: center;
-          color: #fff;
-      
-           border-bottom-left-radius: 10px;
-           border-bottom-right-radius: 10px;
-           margin: 0;
+          position: relative;
+    bottom: 8px;
+    left: 0.05333rem;
+    width: 100%;
+    background:rgba(239,241,245,1);
+    padding: 10px 0;
+    line-height:18px;
+    font-size: 0.32rem;
+    text-align: center;
+    color: #6E7D8C;
+    border-bottom-left-radius: 0.26667rem;
+    border-bottom-right-radius: 0.26667rem;
+    margin: 0;
+    z-index: -111;
+    span{
+      padding-top: 5px;
+    }
         }
       }
       .img {
@@ -1769,6 +1893,7 @@ let chart2=void 0;
       width: 95%;
       margin: 0 auto;
       margin-bottom: 15px;
+      color: #6e7d8c;
         ul{
           display: inline-block;
           text-align: center;     
@@ -1794,41 +1919,58 @@ let chart2=void 0;
             width: 25%;
             float: right;
           }
+    }
+    // 编辑弹框
+    .van-popup{
+      border-radius: 15px;
+      width: 80%;
+      height: 60%;
+      padding: 0 10px 10px 10px;
+      .wompile_box{
+        font-family: serif;
+        color:#ADADBD;
+        // height: 96%;
+        h3{
+          text-align: center;
+          font-weight: initial;
+        }
+        .wompile_info{
+          textarea{
+          width: 90%;
+          background: #eff1f578;
+          padding:15px;
+          border: none;
+          font-size: 12px;
+          }
+        }
+        .history{
+          ul{
+            font-size: 12px;
+            li{
+              .text{
+                margin-bottom: 0;
+              }
+              .time{
+                text-align: right;
+                margin-top: 5px;
+              }
+            }
+          }
 
-    //     position: relative;
-    //     width: 95%;
-    //     margin: 0 auto;
-    //    margin-bottom: 15px;
-    //   ul{
-    //       width:75%;
-    //       box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
-    //        padding: 15px;
-    //         border-radius: 15px;
-    //     li{
-    //       display: inline-block;
-    //       // float: left;
-    //       width: 25%;
-    //       text-align: center;
-    //       span{
-    //         display: block;
-            
-    //       }
-    //       &.last{
-    //           position: absolute;
-    //           right: 0;
-    //           top: 0rem;
-    //           box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
-    //           border-radius: 0.4rem;
-    //           height: 85%;
-    //           padding: 10px 0;
-    //     }
-    //     }
-    //  &:after{
-    //    display: block;
-    //    content: "";
-    //    clear: both;
-    //  }
-    //   }
+        }
+      }
+      .van-button--danger{
+           background: #5A7AEF;
+          border-radius: 0.34667rem;
+          border: 0.02667rem solid #5A7AEF;
+          position: absolute;
+          left: 50%;
+          transform: translate3d(-50%,50%,0);
+          bottom: 30px;
+          padding: 0 25px;
+          height: 30px;
+          line-height: 30px;
+      }
     }
   }
 </style>
