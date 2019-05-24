@@ -8,21 +8,24 @@
     <topNav> <p class="all_device_init" @click="openDeviceListFn()">{{deviceListEnd}}<i class="delta"></i></p></topNav>
     <div class="itme-box">
       <p class="tit">
-        <i class="i"></i>今日考勤信息
+        <!-- <i class="i"></i> -->
+        今日考勤信息
       </p>
       <canvas  id="myChart" width height="255px"></canvas>
       <span class="not-data" v-if="drw1Data==''">暂无数据...</span>
     </div>
     <div class="itme-box">
       <p class="tit">
-        <i class="i i1"></i> 今日活跃度
+        <!-- <i class="i i1"></i>  -->
+        今日活跃度
       </p>
       <canvas id="myChart2" width height="255px"></canvas>
       <span class="not-data" v-if="drw2Data==''">暂无数据...</span>
     </div>
     <div class="itme-box" id="canvas3-box">
       <p class="tit">
-        <i class="i i2"></i> 当月考勤信息
+        <!-- <i class="i i2"></i>  -->
+        当月考勤信息
         <span style="position:relative" @click="selet" class="selet">
           {{seleed}}
           <van-icon name="arrow-down"/>
@@ -93,6 +96,7 @@ export default {
   data() {
     return {
       hideData:[],
+        hideData2:[],
       openid:"",
       deviceListEnd:"",
       deviceList:[
@@ -116,7 +120,8 @@ export default {
     };
   },
   computed: {},
-  created() {},
+  created() {
+  },
   mounted() {
   this.initFn();
   },
@@ -195,29 +200,29 @@ export default {
           if (res.result === "true") {
           
             this.drw1Data = res.content;
-          //    let drw1Data=[
-          //     {type: "上班", value: 6, userName: '测试1'},
-          //     {type: "上班", value: 9.5, userName: '测试2'},
-          //     {type: "上班", value: 10, userName: '测试3'},
-          //     {type: "上班", value: 9.5, userName: '测试4'},
-          //     {type: "上班", value: 10, userName: '测试5'},
-          //     {type: "上班", value: 9.5, userName: '测试6'},
-          //     {type: "上班", value: 9, userName: '测试7'},
-          //     {type: "上班", value: 7, userName: '测试8'},
-          //     {type: "上班", value: 8, userName: '测试9'},
-          //     {type: "上班", value: 9, userName: '测试10'},
-
-          // {type: "下班", value: 16.08, userName: '测试1'},
-          // {type: "下班", value: 18.4, userName: '测试2'},
-          // {type: "下班", value: 17.08, userName: '测试3'},
-          // {type: "下班", value: 20.4, userName: '测试4'},
-          // {type: "下班", value: 21.08, userName: '测试5'},
-          // {type: "下班", value: 19.4, userName: '测试6'},
-          // {type: "下班", value: 19.08, userName: '测试7'},
-          // {type: "下班", value: 20.4, userName: '测试8'},
-          // {type: "下班", value: 22.08, userName: '测试9'},
-          // {type: "下班", value: 23.4, userName: '测试10'},
-          //   ];
+            let drw1Data=[
+              {type: "上班", value: 6, userName: '测试1'},
+              {type: "上班", value: 9.5, userName: '测试2'},
+              {type: "上班", value: 10, userName: '测试3'},
+              {type: "上班", value: 9.5, userName: '测试4'},
+              {type: "上班", value: 10, userName: '测试5'},
+              {type: "上班", value: 9.5, userName: '测试6'},
+              {type: "上班", value: 9, userName: '测试7'},
+              {type: "上班", value: 7, userName: '测试8'},
+              {type: "上班", value: 8, userName: '测试9'},
+              {type: "上班", value: 9, userName: '测试10'},
+              {type: "下班", value: 16.08, userName: '测试1'},
+              {type: "下班", value: 18.4, userName: '测试2'},
+              {type: "下班", value: 17.08, userName: '测试3'},
+              {type: "下班", value: 20.4, userName: '测试4'},
+              {type: "下班", value: 21.08, userName: '测试5'},
+              {type: "下班", value: 19.4, userName: '测试6'},
+              {type: "下班", value: 19.08, userName: '测试7'},
+              {type: "下班", value: 20.4, userName: '测试8'},
+              {type: "下班", value: 22.08, userName: '测试9'},
+              {type: "下班", value: 23.4, userName: '测试10'},
+            ];
+        // this.drw1Data=[...this.drw1Data,...drw1Data]
             for(let i=0;i< this.drw1Data.length;i++){
               if(this.drw1Data[i].type=="上班"&&this.drw1Data[i].value<6){
                 this.drw1Data[i].value=6;
@@ -241,16 +246,18 @@ export default {
             
                     chart = new F2.Chart({
               id: "myChart",
-              pixelRatio: window.devicePixelRatio
+              pixelRatio: window.devicePixelRatio,
+         
             });
             chart.source(this.drw1Data, {
               userName: {
                 // tickInterval:5,
                 type: 'cat',
                 // tickCount: 3,
-                //  min: 0,
-                // max: 3,
+                //  min: 6,
+                // max: this.drw1Data.length,
                  values:this.hideData.length?this.hideData:null,
+                  //  values:this.drw1Data[0].userName,
               },
               value: {
                 // type: 'timeCat',
@@ -282,13 +289,14 @@ export default {
               }
             });
                //图例
-              chart.legend({
-                // align:'right',
-              // position: 'right',
-              itemWidth: 50,
-                //  offsetY: 0,
-                // offsetX: 150
-            });
+                 chart.legend(false);
+            //   chart.legend({
+            //     // align:'right',
+            //   // position: 'right',
+            //   itemWidth: 50,
+            //     //  offsetY: 0,
+            //     // offsetX: 150
+            // });
              // 绘制 Guide.Line
               chart.guide().line({
                 start: ['min', 18],
@@ -300,8 +308,8 @@ export default {
                 }
               });
                chart.guide().line({
-                start: ['min', 6],
-                end: ['max', 6],
+                start: ['min', 9],
+                end: ['max', 9],
                 style: {
                   stroke: '#e5e5e5',
                   lineWidth: 1,
@@ -353,35 +361,31 @@ export default {
             });
              if(len>5){
                   chart.interaction('pan',{
-                 speed:5,
-                           
-               });
-              //定义进度条
+                    startEvent:'touchstart',
+                    onStart:function(va){
+                        console.log(va);
+                    }
+                  });
+
+
+
+              // 定义进度条
               chart.scrollBar({
                 mode: 'x',
                 xStyle: {
-                  offsetY: -3
+                  offsetY: 0
                 }
               });
               }
+
+
+
            // chart.area().position('name*value').color('type').shape('')
-            // chart
-            //   .line()
-            //   .position("userName*value")
-            //   .color("type")
-            //   .shape("type", function(type) {
-            //     if (type === "上班") {
-            //       return "#f25e87";
-            //     }
-            //     if (type === "下班") {
-            //       return "#f25e87";
-            //     }
-            //   });
               chart.line().position('userName*value').color('type', function(val) {
       if (val === '上班') {
-        return '#4acdd6';
+        return '#926BFF';
       }else{
-        return '#8968ff'
+        return '#F87986'
       }
     }).shape('smooth').style('type',{ 
   //   lineWidth(val) {
@@ -394,20 +398,7 @@ export default {
             chart.render();
 
             }else{
-              
-                 
               chart.changeData(this.drw1Data);
-            
-            //   chart.source(this.drw1Data, {
-            //   userName: {
-            //     // tickInterval:5,
-            //     // type: 'cat',
-            //     // tickCount: 3,
-            //     //  min: 0,
-            //     // max: 3,
-            //      values:hideData,
-            //   }
-            // });
             }
           } else {
             console.log("err");
@@ -435,11 +426,21 @@ export default {
             //   {value: 15.1, userName: '张三1'},
             //   { value: 10.48, userName: '张2'},
             //     {value: 18.1, userName: '张三11'},
-            //   // { value: 18, userName: '张22'},
-            //   //   {value: 10, userName: '张三111'},
-            //   // { value: 21, userName: '张222'},
+            //   { value: 18, userName: '张22'},
+            //     {value: 10, userName: '张三111'},
+            //   { value: 21, userName: '张222'},
 
             // ];
+            let len=this.drw2Data.length;
+            if(len>5){
+              for(let i =0;i<5;i++){
+                    this.hideData2[i]= this.drw2Data[i].userName        
+               }
+            }else{
+               for(let i =0;i<this.drw2Data.length;i++){
+                    this.hideData2[i]= this.drw2Data[i].userName          
+               }
+            }
             if(!chart2){
                  chart2 = new F2.Chart({
               id: "myChart2",
@@ -448,7 +449,8 @@ export default {
             var defs = {
               userName: {
                 // range: [0, 1],
-                // max: 2006
+                // max: 2006,
+                 values:this.hideData2.length?this.hideData2:null,
               },
               value: {
                 // tickCount: 5,
@@ -473,6 +475,20 @@ export default {
               }
             });
             chart2.source(this.drw2Data, defs);
+            chart2.legend(false);
+              if(len>5){
+                  chart2.interaction('pan',{
+                 speed:5,
+                           
+               });
+              // 定义进度条
+              chart2.scrollBar({
+                mode: 'x',
+                xStyle: {
+                  offsetY: -3
+                }
+              });
+              }
             chart2.tooltip({
               showCrosshairs: true,
               onShow: function onShow(ev) {
@@ -483,9 +499,9 @@ export default {
             });
                      chart2.line().position('userName*value').color('type', function(val) {
       if (val === '上班') {
-        return '#8968ff';
+        return '#27D0D2';
       }else{
-        return '#8968ff'
+        return '#27D0D2'
       }
       //  return '#8968f'
     }).shape('smooth');
@@ -605,13 +621,14 @@ export default {
                }
     });
              //图例
-              chart3.legend({
-                // align:'right',
-              // position: 'right',
-              itemWidth: 50,
-                //  offsetY: 0,
-                // offsetX: 150
-            });
+               chart3.legend(false);
+            //   chart3.legend({
+            //     // align:'right',
+            //   // position: 'right',
+            //   itemWidth: 50,
+            //     //  offsetY: 0,
+            //     // offsetX: 150
+            // });
       // 绘制 Guide.Line
               chart3.guide().line({
                 start: ['min', 18],
@@ -623,8 +640,8 @@ export default {
                 }
               });
                chart3.guide().line({
-                start: ['min', 6],
-                end: ['max', 6],
+                start: ['min', 9],
+                end: ['max', 9],
                 style: {
                   stroke: '#e5e5e5',
                   lineWidth: 1,
@@ -729,9 +746,9 @@ export default {
         return '#dddddd';
       }else
       if (val === '上班') {
-        return '#f25e87';
+        return '#6A5CFF';
       }else{
-        return '#c789e6'
+        return '#F25C87'
       }
     }).shape('smooth').style('type',{ 
     lineWidth(val) {

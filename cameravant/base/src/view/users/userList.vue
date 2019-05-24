@@ -20,18 +20,23 @@
                             <span style="font-size:24px;" class="iconfont icon-records"><van-icon name="records" /></span>
                         </li>
                     </ul>
-                    <empty v-else>
-                        <span>暂无此类型用户，先去<span class="blue" @click="goUserAdd">添加用户</span>吧~</span>
-                    </empty>
+  <div class="add_box">
+                 <van-button type="info" size="large" @click="goUserAdd" class="btn add_user">添加用户</van-button>
+        </div>
+                    <!-- <empty v-else> -->
+                        <!-- <span>暂无此类型用户，先去<span class="blue" @click="goUserAdd">添加用户</span>吧~</span> -->
+                    <!-- </empty> -->
                 </div>
             </van-tab>
         </van-tabs>
-        <empty v-else>
-            <span>暂无此用户，先去<span class="blue" @click="goUserAdd">添加用户</span>吧~</span>
-        </empty>
+        <!-- <empty v-else>
+            <span >暂无此用户，先去<span class="blue" @click="goUserAdd">添加用户</span>吧~</span>
+        </empty> -->
+   
         <van-popup v-model="popEdit" class="pop_detail" :modal="false" v-if="Object.keys(editItem).length>0">
             <userEdit :item="editItem" @editSuc="listUpdate"></userEdit>
         </van-popup>
+   
     </div>
 </template>
 
@@ -276,6 +281,12 @@
         -webkit-overflow-scrolling: touch;
         background-color: #fff;
         padding-bottom: 10px;
+       
+            .van-button--info[data-v-68a51afe]{
+                    background: #5a7aef;
+                    border-radius: 0.4rem;
+            }
+       
         .ul_container {
             height: calc(~'100vh - 46px');
             overflow: scroll;
@@ -388,6 +399,14 @@
     }
 </style>
 <style>
+.user_list .add_box{
+    padding: 0 16px;
+    margin-top: 25px;
+}
+.user_list .add_box .add_user{
+        background: #5a7aef;
+    border-radius: 0.4rem;
+}
 .user_list .feedback .feedback_list[data-v-487cc491]{
     padding-top: 0;
 }

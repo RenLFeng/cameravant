@@ -138,6 +138,7 @@ export default {
           return;
         } else {
           const openid = that.getVueUrlParam('openid') || window.sessionStorage.getItem('openid') || '';
+          const isVip=window.sessionStorage.getItem('isVip') || '';
           if(!openid || openid === 'null'){
             // alert('get===Param() || Storage'+openid)
             const code = that.getUrlParam('code');
@@ -148,9 +149,11 @@ export default {
               that.axios.post(this.api.getCode+'?code='+code,{
               }).then(res => {
                 // alert('134'+JSON.stringify(res));
-                if(res.result=='1'){
-                  window.sessionStorage.setItem('openid', res.msg);
-                  resovle(res.msg);
+                if(res.result=='true'){
+                  window.sessionStorage.setItem('openid', res.content.openId);
+                  window.sessionStorage.setItem('isVip', res.content.isVip);
+                  Vue.prototype.isVip=res.content.isVip;
+                  resovle(res.content.openId);
                   // alert('135 ' + local + '?appid=' + appid+ '&openid=' + res.msg);
                 }else{
                   // alert('143 ' + JSON.stringify(res));
@@ -162,6 +165,7 @@ export default {
             }
           }else{
             window.sessionStorage.setItem('openid', openid);
+             Vue.prototype.isVip=isVip;
             // window.location.href = local + '?appid=' + appid+ '&openid=' + openid;
             // alert('149 '+openid);
             resovle(openid);

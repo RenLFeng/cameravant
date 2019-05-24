@@ -11,7 +11,7 @@
             <!-- <van-field v-model="deviceCode" label="二维码信息" placeholder="扫描后自动获取" size="large" required @click="wxScan" /> -->
         </div>
         <div class="btn_container">
-            <van-button type="info" size="large" @click="shareAccount" class="btn">共享</van-button>
+            <van-button  type="info" size="large" @click="shareAccount" class="btn">共享</van-button>
         </div>
     </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div class="device device_box">
-    <div :class="{'device_wrap':1,'act':showDeviceList}" v-show="showDeviceList">
+    <div :class="{'device_wrap':1,'act':showDeviceList}" v-if="showDeviceList">
       <ul>
         <li v-if="Mydevicetypes.length>1" @click="selectTypeMyFn(item,index)" :class="index>0?'child':index==0?'device_tit':index==0?'all_device_my':''" v-for="(item,index) in Mydevicetypes" :key="index"><span :class="{'act':item.isact,'cir_small':1} "></span>{{item.device_inst_addr}}</li>
         <li v-if="Ejdevicetypes.length>1" @click="selectTypeEjFn(item,index)" :class="index>0?'child':index==0?'device_tit':index==0?'all_device_enjoy':''" v-for="(item,index) in Ejdevicetypes" ><span :class="{'act':item.isact,'cir_small':1} "></span>{{item.device_inst_addr}}</li>
@@ -43,26 +43,31 @@
         <ul class="">
           <li>
             <span class="man"></span>
-            <span>{{circleData.sexs[0].img_sum}}%</span>
+            <span>{{circleData.sexs[0].img_sum}}<i class="fen">%</i></span>
           </li>
         </ul>
          <ul>
           <li>
             <span class="gir"></span>
-         <span>{{circleData.sexs[1].img_sum}}%</span>
+         <span>{{circleData.sexs[1].img_sum}}<i class="fen">%</i></span>
           </li>
         </ul>
       </li>
   </ul>
 <!-- 年龄区分 -->
     <div class="age_content bar">
+       <p class="tit">
+        <!-- <i class="i"></i> -->
+       客户年龄分布
+      </p>
       <canvas id="mountNode"></canvas>
     </div>
  </div>
     <!-- 客流分析曲线 -->
      <div class="itme-box device_chart" id="canvas3-box">
       <p class="tit">
-        <i class="i"></i>客流分析曲线
+        <!-- <i class="i"></i> -->
+        客流分析曲线
       </p>
       <canvas  :id="`myChart3${concut}`" width height="200px">
         
@@ -70,7 +75,7 @@
       <span class="not-data" v-if="!drw1Data.length && showCanvas">暂无分析数据...</span>
     </div>
     <!-- //客户类型 circle-->
-    <div class="customer_box">
+    <div class="customer_box" v-if="isVip">
        <ul class="item_left">
           <li v-for="(item,index) in customer[0]"  :key="index">
          <van-circle
@@ -98,7 +103,7 @@
         layer-color="#E0E4EB"
         :speed="100"
         :stroke-width="50"
-       :text="item['currentRateAge'+index].toFixed(0) + '%'"
+       :text="item['currentRateAge'+index].toFixed(0) + '分'"
       />
       <span>{{item.name}}</span> 
       </li>
@@ -152,7 +157,7 @@
 
 
 <!-- 备注编辑 -->
-<van-popup v-model="showWompile">
+<!-- <van-popup v-model="showWompile">
   <div class="wompile_box">
     <h3>添加备注</h3>
     <div class="wompile_info">
@@ -174,7 +179,7 @@
     </div>
   </div>
   <van-button round type="danger" @click="submitCompileFn()">确认</van-button>
-</van-popup>
+</van-popup> -->
 
 
    <van-swipe :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
@@ -188,52 +193,6 @@
         </div>
       </van-swipe-item>
     </van-swipe>
-
-<!-- 
-    <van-swipe :autoplay="3000" class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
-      <van-swipe-item :key="index" v-for="(image, index) in imgList" v-if="index===0">
-        <div class="img_container">
-          <img :src="imgList[0].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[0].imgSex?'男':'女'}}　{{imgList[0].imgAge}}<br>{{imgList[0].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-        <div class="img_container">
-          <img :src="imgList[1].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[1].imgSex?'男':'女'}}　{{imgList[1].imgAge}}<br>{{imgList[1].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-        <div class="img_container">
-          <img :src="imgList[2].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[2].imgSex?'男':'女'}}　{{imgList[2].imgAge}}<br>{{imgList[2].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-      </van-swipe-item>
-      <van-swipe-item :key="index" v-for="(image, index) in imgList" v-if="index===3">
-        <div class="img_container">
-          <img :src="imgList[3].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[3].imgSex?'男':'女'}}　{{imgList[3].imgAge}}<br>{{imgList[3].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-        <div class="img_container">
-          <img :src="imgList[4].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[4].imgSex?'男':'女'}}　{{imgList[4].imgAge}}<br>{{imgList[4].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-        <div class="img_container">
-          <img :src="imgList[5].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[5].imgSex?'男':'女'}}　{{imgList[5].imgAge}}<br>{{imgList[5].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-      </van-swipe-item>
-      <van-swipe-item :key="index" v-for="(image, index) in imgList" v-if="index===6">
-        <div class="img_container">
-          <img :src="imgList[6].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[6].imgSex?'男':'女'}}　{{imgList[6].imgAge}}<br>{{imgList[6].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-        <div class="img_container">
-          <img :src="imgList[7].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[7].imgSex?'男':'女'}}　{{imgList[7].imgAge}}<br>{{imgList[7].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-        <div class="img_container">
-          <img :src="imgList[8].imgMd5+'?w=400&h=400'" class="img" />
-          <p class="note">{{imgList[8].imgSex?'男':'女'}}　{{imgList[8].imgAge}}<br>{{imgList[8].imgDatetime.replace(/(\S)*\s/,"")}}</p>
-        </div>
-      </van-swipe-item>
-    </van-swipe> -->
     <!-- <empty class="grey" v-else>
       <span>暂无图片数据</span>
     </empty> -->
@@ -283,6 +242,7 @@ let chart2=void 0;
 
     data() {
       return {
+        isNoDevice:false,
         textarea:"",
         showWompile:false,
         customer_info:{},
@@ -307,7 +267,7 @@ let chart2=void 0;
           ages:[
                 {
                     currentRateAge0:0,
-                    agegroup: "18岁以下",
+                    agegroup: "18以下",
                     img_sum: 0
   
                 },
@@ -422,21 +382,22 @@ let chart2=void 0;
         concut:1,
         customer:[
             [
-                {
+              {
                   "currentRateAge0":0,
-                  "name": "新客",
+                  "name": "VIP",
                   "count": 0
                 },
                 {
                   "currentRateAge1":0,
-                  "name": "熟客",
+                  "name": "新客",
                   "count": 0
                 },
                 {
                   "currentRateAge2":0,
-                  "name": "VIP占比",
+                  "name": "熟客",
                   "count": 0
                 }
+                
             ],
             [
                   {
@@ -445,7 +406,7 @@ let chart2=void 0;
                     "count": 0
                   }
             ]
-   ]
+   ],
    };
 },
     computed: {
@@ -478,6 +439,7 @@ let chart2=void 0;
       this.getCodeInit();
     },
     mounted() {
+    
     },
     destroyed(){
       chart.destroy();
@@ -530,6 +492,7 @@ let chart2=void 0;
       },
     //展开设备列表
       showDeviceListFn(){
+        if(this.isNoDevice) return;
         this.showDeviceList=!this.showDeviceList;
       },
       //选择 '我的' 设备类型
@@ -619,19 +582,19 @@ let chart2=void 0;
       items[0].value = items[0].value+'人';
     }
   });
-   chart2.guide().text({
-        // top:true,
-        position: ['min', 'max'],
-        content: '客户年龄分布',
-        style: {
-            fill: '#6E7D8C', // 点的填充颜色
-          textBaseline: 'middle',
-          textAlign: 'start',
-          fontSize:14
-        },
-         offsetY: -35,
-        offsetX: -20
-    });
+  //  chart2.guide().text({
+  //       // top:true,
+  //       position: ['min', 'max'],
+  //       content: '客户年龄分布',
+  //       style: {
+  //           fill: '#6E7D8C', // 点的填充颜色
+  //         textBaseline: 'middle',
+  //         textAlign: 'start',
+  //         fontSize:14
+  //       },
+  //        offsetY: -35,
+  //       offsetX: -20
+  //   });
   chart2.legend({
       custom:true
     })
@@ -661,19 +624,20 @@ let chart2=void 0;
       selectAgeSexFn(index){
          let data={
            "deviceIds":this.deviceidsArr,
-           "timeType":index
+           "timeType":index,
+           "openId":this.openid
            }
-
         const that = this;
         // data.openId = window.sessionStorage.getItem('openid');
         // if (deviceIds) {
         //   data.deviceIds = deviceIds;
         // }
-        this.axios.post(this.api.statiStat, {
+        this.axios.post(this.api.statiStatVip, {
           data
         }).then(res=>{
           if (res.result === "true") {
               let resData = res.content;
+              resData[1].splice(resData[1].length-1,1);
             for(let i=0;i<resData[0].length;i++){
                 that.circleData.sexs[i].img_sum=resData[0][i].img_sum;
                  that.circleData.sexs[i].sex=resData[0][i].sex;
@@ -717,11 +681,11 @@ let chart2=void 0;
       console.log(this.deviceidsArr);
          let data={
            "deviceIds":this.deviceidsArr,
-           "timeType":index
+           "timeType":index,
+           "openId":this.openid
            }
       this.axios
-        .post(this.api.statiStatcompare, { data })
-        // .post(this.api.analysisDay, { data })
+        .post(this.api.statiStatcompareVip, { data })
         .then(res => {
           if (res.result === "true") {
             this.drw1Data = res.content;
@@ -788,6 +752,7 @@ let chart2=void 0;
               // });
 
               //图例
+
               chart.legend({
                 align:'right',
               // position: 'right',
@@ -806,9 +771,9 @@ let chart2=void 0;
             // chart.area().position('name*value').color('type').shape('')
               chart.line().position('count*img_sum').color('type', function(val) {
       if (val === '今日'||val === '本周'||val === '本月'||val === '本年') {
-        return '#4ACDD6';
+        return '#4ACDD6'; 
       }else{
-        return 'rgba(74,205,214,.3)'
+        return 'rgba(246,111,135,.3)';
       }
     }).shape('smooth').style({
       lineWidth:3
@@ -848,20 +813,6 @@ let chart2=void 0;
         // this.getImgstatPerhour(deviceIds);
         this.newImglist(deviceIds);
       },
-      //顾客类型
-      getCustomerTypeFn(){
-        let data={};
-       this.axios
-        .post(this.api.statiStatcompare, { data }).then((res)=>{
-          if(res.result=='true'){
-              // this.persons=res.content;
-              // this.young=this.persons[0];
-              // this.aged=this.persons[1];
-          }else{
-
-          }
-        })
-      },
       //获取设备下拉数据
       getDeviceList(openid) {
         const that = this;
@@ -890,11 +841,17 @@ let chart2=void 0;
                this.Mydevicetypes[0].device_id=this.allDeviceListOb[0].deviceIds; 
          }else{
         //如果有共享设备
-           this.deviceidsArr= res.content[1].deviceIds;
+        if(this.allDeviceListOb[1].deviceIds.length){
+            this.deviceidsArr= res.content[1].deviceIds;
             this.selectFalseFn( this.Ejdevicetypes[0]);
                this.Ejdevicetypes[0].isact=true;
                this.Ejdevicetypes[0].device_id=this.allDeviceListOb[1].deviceIds;
                this.deviceTypeEd= this.Ejdevicetypes[0].device_inst_addr;
+        }else{
+              thsi.showDeviceList=false;
+              this.isNoDevice=true;
+              this.deviceTypeEd='';
+        }
          }
             this.initFn(this.tabRangeTypeSelected);
             this.getPageData(this.deviceidsArr);
@@ -1575,13 +1532,13 @@ let chart2=void 0;
     }
     .circle_box{
           margin: 10px;
-              height: 150px;
+              height: 142px;
     margin-bottom: 30px;
           // border-radius: 15px;
           // padding: 10px;
           // box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
       .sex_contect,.bar{
-         padding: 10px 0;
+        //  padding: 10px 0;
           box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
              border-radius: 15px;
              height: 100%;
@@ -1601,13 +1558,25 @@ let chart2=void 0;
         }
         &.bar{
           padding:0;
-            padding-top: 20px;
+            padding-top: 10px;
+            height: 107%;
+            .tit{
+                position: absolute;
+                margin: 0;
+                // font-size: 16px;
+                color: #6e7d8c;
+                padding-left: 0.53333rem;
+                left: 0;
+                top: 7px;
+            }
           }
       }
       margin-top: 20px;
       .sex_contect{
             width: 28%;
             float: left;
+            height: 110%;
+            padding: 3px 0;
           //  height: 5.18rem !important;
              .sex_icon_box{
                ul{
@@ -1616,8 +1585,9 @@ let chart2=void 0;
           }
           .person_item{
             height: 40%;
+                margin-top: 7px;
             .person_tit{
-              font-size: 16px;
+              font-size: 14px;
             }
             .person_all{
                   font-size: 30px;
@@ -1628,20 +1598,25 @@ let chart2=void 0;
           }
           .sex_item{
             position: absolute;
-            bottom: 0;
+            bottom: 8px;
             width: 100%;
             height: 60%;
             margin: 0 10px;
-            font-family: 'Mohave';
             ul{
               position: absolute;
               bottom:0;
               li{
               span{
                  font-size: 16px;
-                 width: 30px;
-                 height: 30px;
+                //  width: 30px;
+                 height: 33px;
                  font-weight: bold;
+                   font-family:-webkit-body;
+                   margin-top: 0;
+                   .fen{
+                     font-size: 12px;
+                   font-family: inherit;
+                   }
                  &.man{
                    background: url(../../assets/man.png) no-repeat;
                    background-size: 90%;
@@ -1836,8 +1811,8 @@ let chart2=void 0;
     .swipe {
       padding:4px 0;
       text-align: center;
-      width: 95%;
-    box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
+      width: 97%;
+    // box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
     border-radius: 15px;
     margin: 0 auto;
     text-align: left;
@@ -1848,9 +1823,9 @@ let chart2=void 0;
     }
       .img_container {
         display: inline-block;
-        width: calc(~'26% - 10px');
+        width: calc(~'25.7% - 10px');
         height: 25vw;
-        margin: 2px;
+        margin: 3px;
         position: relative;
         .img {
           width: 100%;
@@ -1859,7 +1834,7 @@ let chart2=void 0;
         }
         .note {
           position: relative;
-    bottom: 8px;
+    bottom: 13px;
     left: 0.05333rem;
     width: 100%;
     background:rgba(239,241,245,1);
@@ -1892,7 +1867,7 @@ let chart2=void 0;
     .customer_box{
       width: 95%;
       margin: 0 auto;
-      margin-bottom: 15px;
+      margin-bottom: 6px;
       color: #6e7d8c;
         ul{
           display: inline-block;
@@ -1906,6 +1881,8 @@ let chart2=void 0;
               span{
                 display: block;
                 padding-top: 10px;
+                // font-size: 16px;
+                color: #6e7d8c;
               }
             }
         }
@@ -2001,9 +1978,9 @@ let chart2=void 0;
     p {
       position: relative;
       margin: 0;
-      font-size: 16px;
+      // font-size: 16px;
       color: #6e7d8c;
-      padding-left: 30px;
+      padding-left: 20px;
       .i {
         position: absolute;
         width: 10px;
@@ -2069,6 +2046,6 @@ let chart2=void 0;
 }
 #mountNode{
   width: 100% !important;
-  height: 100%!important;
+  height: 105%!important;
 }
 </style>

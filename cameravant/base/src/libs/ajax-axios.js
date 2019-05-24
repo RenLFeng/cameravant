@@ -13,7 +13,8 @@ import axios from 'axios';
 const http = axios.create({
   // baseURL: 'http://172.28.3.26:8088', // 这里是放接口的统一前缀
   baseURL: 'http://wx.isafeiot.com', // 这里是放接口的统一前缀
-  timeout: 10000 // 请求多少秒后还请求不到的话，就放弃,  
+  // baseURL:'http://172.28.5.11:9081',
+  timeout: 100000 // 请求多少秒后还请求不到的话，就放弃,  
 });
 
 
