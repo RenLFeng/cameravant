@@ -180,9 +180,9 @@
   </div>
   <van-button round type="danger" @click="submitCompileFn()">确认</van-button>
 </van-popup> -->
-
-
-   <van-swipe :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
+<button @click="sp()">click</button>
+<div class="swipe_container">
+   <van-swipe ref="sp" :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
       <van-swipe-item :key="index" v-for="(image, index) in imgList">
         <div @click="compileFn(item)" class="img_container" v-for="(item,itmIndex) in image" :key="itmIndex" v-if="item.imgMd5">
           <img :src="item.imgMd5+'?w=400&h=400'" class="img" />
@@ -193,6 +193,7 @@
         </div>
       </van-swipe-item>
     </van-swipe>
+</div>
     <!-- <empty class="grey" v-else>
       <span>暂无图片数据</span>
     </empty> -->
@@ -448,6 +449,9 @@ let chart2=void 0;
       chart2=null;
   },
     methods: {
+      sp(){
+        this.$refs.sp.swipeTo(6);
+      },
       //初始化图表数据
       initFn(index){
               this.selectAgeSexFn(index);

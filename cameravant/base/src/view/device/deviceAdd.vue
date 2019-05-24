@@ -1,8 +1,8 @@
 <template>
     <div class="feedback">
         <div class="scan" @click="wxScan">
-            <span class="iconfont icon-saomiao">
-            </span>
+            <!-- <span class="iconfont icon-saomiao"> -->
+            <!-- </span> -->
             扫描设备
         </div>
         <div class="type flex">
