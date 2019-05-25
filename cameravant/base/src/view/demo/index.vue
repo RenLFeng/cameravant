@@ -212,7 +212,7 @@ let chart2=void 0;
                 
                  {
                      currentRateAge4:0,
-                      agegroup: "46-55",
+                      agegroup: "46以上",
                     img_sum: 0
 
                 },
@@ -482,7 +482,6 @@ let chart2=void 0;
         }).then(res=>{
           if (res.result === "true") {
               let resData = res.content;
-              resData[1].splice(resData[1].length-1,1);
             for(let i=0;i<resData[0].length;i++){
                 that.circleData.sexs[i].img_sum=resData[0][i].img_sum;
                  that.circleData.sexs[i].sex=resData[0][i].sex;

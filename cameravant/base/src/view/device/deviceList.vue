@@ -380,6 +380,10 @@
                 font-size: 30px;
             }
         }
+        .add_device[data-v-fcebbbc8]{
+            background: #5a7aef;
+                border-radius: 0.4rem;
+        }
         .pop_detail {
             width: 100%;
             height: 100%;

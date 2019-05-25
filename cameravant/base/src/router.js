@@ -137,7 +137,7 @@ const routes = [
   {
     path: '/sqList',
     name: 'sqList',
-    component: () => import('./view/users/sqList'),
+    component: () => import('./view/users/sqlist'),
     meta: {
       title: '授权列表'
     }

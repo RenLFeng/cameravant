@@ -26,7 +26,7 @@
             </li>
         </ul>
         <div class="btn_contaienr">
-            <van-button type="primary" size="large" class="btn" @click="submit">提交</van-button>
+            <van-button type="info" size="large" class="btn" @click="submit">提交</van-button>
             <div class="next">
                 <span @click="goMyFeedback" class="blue">
                     我的反馈

@@ -11,7 +11,7 @@
         <van-tab v-for="item in tabDeviceType" :title="item.text">
         </van-tab>
       </van-tabs> -->
-      <p class="all_device_init" @click="showDeviceListFn()">{{deviceTypeEd}}<i class="delta"></i></p>
+      <p v-if="!isNoDevice" class="all_device_init" @click="showDeviceListFn()">{{deviceTypeEd}}<i class="delta"></i></p>
     </topNav>
     <!-- <div class="input_container flex" @click='deviceSelectPop=true'><span class="input_label">设备名称：</span><span class="input_shape">{{selectedDevice.device_inst_addr?selectedDevice.device_inst_addr:'全部'}}</span>
       </div> -->
@@ -180,7 +180,7 @@
   </div>
   <van-button round type="danger" @click="submitCompileFn()">确认</van-button>
 </van-popup> -->
-<button @click="sp()">click</button>
+<!-- <button @click="sp()">click</button> -->
 <div class="swipe_container">
    <van-swipe ref="sp" :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
       <van-swipe-item :key="index" v-for="(image, index) in imgList">
@@ -291,16 +291,10 @@ let chart2=void 0;
                 
                  {
                      currentRateAge4:0,
-                      agegroup: "46-55",
+                      agegroup:"46岁以上",
                     img_sum: 0
 
-                },
-                //  {
-                //      currentRateAge5:0,
-                //       agegroup: "56岁以上",
-                //     img_sum: 0
-
-                // }
+                }
           ]
          }, 
          deviceidsArr2:[],
@@ -641,7 +635,6 @@ let chart2=void 0;
         }).then(res=>{
           if (res.result === "true") {
               let resData = res.content;
-              resData[1].splice(resData[1].length-1,1);
             for(let i=0;i<resData[0].length;i++){
                 that.circleData.sexs[i].img_sum=resData[0][i].img_sum;
                  that.circleData.sexs[i].sex=resData[0][i].sex;
@@ -852,7 +845,7 @@ let chart2=void 0;
                this.Ejdevicetypes[0].device_id=this.allDeviceListOb[1].deviceIds;
                this.deviceTypeEd= this.Ejdevicetypes[0].device_inst_addr;
         }else{
-              thsi.showDeviceList=false;
+              this.showDeviceList=false;
               this.isNoDevice=true;
               this.deviceTypeEd='';
         }

@@ -13,6 +13,7 @@
     }
   </script>
   <style lang="less">
+@import "../public/public.less";
     @import "../public/iconfont/iconfont.css";
     body {
       font-size: 16px;
