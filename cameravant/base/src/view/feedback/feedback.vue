@@ -34,6 +34,7 @@
             </div>
         </div>
     </div>
+    
 </template>
 
 <script>
@@ -42,9 +43,11 @@
 
     import { Field } from 'vant';
     import { Button } from 'vant';
-    import {Dialog} from 'vant';
+    import {Dialog,Uploader,Icon } from 'vant';
     export default {
         components: {
+              [Icon.name]: Icon,
+             [Uploader.name]: Uploader,
             [Field.name]: Field,
             [Button.name]: Button,
             [Dialog.name]:Dialog,
@@ -120,6 +123,7 @@
                     window.console.log(err);
                 });
             },
+            //提交
             submit() {
                 const that = this;
                 let data = {};
@@ -236,9 +240,9 @@
                     });
                 }
             },
+              //微信初始化
             wxReady(wxcofigData) {
                 const that = this;
-                //微信初始化
                 wx.config({
                     // debug: true,
                     appId: window.sessionStorage.getItem('appid') || this.$route.query['appid'],
@@ -257,43 +261,56 @@
                 });
             },
             // 上传图片方法=========
-            upload() {
+             upload() {
                 let that = this;
                 // alert('275 '+that.imageVideoNumber);
                 if ((that.imageVideoNumber) < 3) {
+                    //从本地相册选择图片或使用相机拍照。
                     wx.chooseImage({
                         count: 3 - (that.imageVideoNumber), // 默认9 imageVideoNumber 记录图片和视频已经上传的数量
                         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
                         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
                         success: res => {
-                            let localIds = res.localIds, // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-                                arr = that.tempFilePaths;
-                            localIds = localIds.concat(arr) //拼接数组的方法
+                            // alert("1==localIds======"+JSON.stringify(res.localIds)+"=="+res.localIds.length)
+                            let localIds = res.localIds,  // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                         arr = that.tempFilePaths;
+                        //  alert("localIds===="+JSON.stringify(localIds)+"arr==="+JSON.stringify(arr))
+                        //    localIds = localIds.concat(arr) //拼接数组的方法
                             that.imageVideoNumber = localIds.length;
+                            //  alert("2==localIds======"+JSON.stringify(localIds))
                             // that.tempFilePaths= localIds.slice(0); //用于页面中显示的图片路径 
                             //上传微信服务器，这两段代码挺好的，测试通过了,只是暂时用不上
-                            that.mediaIds = [];
-                            syncUpload();
-                            function syncUpload() {
+                            that.mediaIds =that.mediaIds||[];
+                            // var i=0;
+                                syncUpload(localIds);
+                            function syncUpload(localIds) {
                                 if (!localIds.length) {
                                     window.console.log(localIds.length);
                                 } else {
                                     var localId = localIds.pop();
+                                    // alert("3==localId======"+JSON.stringify(localId))
                                     // 判断终端
                                     if (Utils.browser().ios) {
+                                        // alert("ios")
                                         that.getLocalImgData(localId); // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-                                    } else {
+                                    } else {                       
+                                        //   alert("4==localId======"+JSON.stringify( that.tempFilePaths))
                                         that.tempFilePaths.push(localId);
+                                        //  alert("5==localId======"+JSON.stringify( that.tempFilePaths))
                                     }
                                     //上传图片接口
                                     wx.uploadImage({
                                         localId: localId, // 需要上传的图片的本地ID，由chooseImage接口获得
                                         isShowProgressTips: 1, // 默认为1，显示进度提示
                                         success: r => {
+                                            // i++;
+                                            //  alert("uploadImage==mediaIds======"+JSON.stringify( that.mediaIds))
                                             that.mediaIds.push(r.serverId);
-                                            syncUpload();
+                                            //  alert("uploadImage==mediaIds======"+JSON.stringify( that.mediaIds))
+                                              syncUpload(localIds);
                                         },
                                         fail: function (res) {
+                                            alert(JSON.stringify(res));
                                             window.console.log(res);
                                             alert('上传图片失败，请重试')
                                         }
@@ -326,7 +343,9 @@
                         }
                         localData = localData.replace(/\r|\n/g, '').replace('data:image/jgp', 'data:image/jpeg');
                         // that.$set(that.imgData, id, {src: localData});
+                        // alert("ios==localId======"+JSON.stringify( that.tempFilePaths))
                         that.tempFilePaths.push(localData);
+                        //  alert("ios==localId======"+JSON.stringify( that.tempFilePaths))
                     }
                 });
             },
