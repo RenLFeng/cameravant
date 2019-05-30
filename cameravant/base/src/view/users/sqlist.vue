@@ -14,7 +14,7 @@
                         </div>
                         <div class="middle">
                             <!-- <span class="name ellipsis">{{item.devicetype_name}}</span> -->
-                            <span class="time">{{item.create_time}} <i @click="claerBindFn(item,index)" class="jiebang"></i></span>
+                            <span class="time">{{item.create_time}} <i @click="claerBindFn(item,index)" class="jiebang iconfont iconjiebang"></i></span>
                         </div>
                         <!-- <span class="iconfont icon-chakan"></span> -->
                         <!-- <span class="iconfont icon-shanchu" @click="deleteDevice(item)"></span> -->
@@ -344,13 +344,14 @@
                         text-align: left;
                         .jiebang{
                             position: absolute;
-                            width: 20px;
-                            height: 20px;
-                            background: url(../../assets/jiebang.png) no-repeat ;
-                            background-size: 100%;
-                            background-position: 50% 50%;                             
+                            // width: 20px;
+                            // height: 20px;
+                            // background: url(../../assets/jiebang.png) no-repeat ;
+                            // background-size: 100%;
+                            // background-position: 50% 50%;                             
                             right: 0;
                             top: 3px;
+                            font-size: 20px;
                         }
                     }
                     .name {}

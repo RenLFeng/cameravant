@@ -1,14 +1,14 @@
 <template>
     <div class="header_common">
         <div class="flex">
-                      <div class="right"><span class="iconfont icon-tianjia" @click="goDeviceAdd"></span></div>
+                      <div class="right"><span class="iconfont icontianjia" @click="goDeviceAdd"></span></div>
   
             <div class="middle">
                 <slot></slot>
             </div>
             <div class="left">
-                <!-- <span class="iconfont icon-ai221" @click="showNav"></span> -->
-                 <span class="fenxiang" @click="showNav"></span>
+                <span class="iconfont iconiconfontzhizuobiaozhun023130" @click="showNav"></span>
+                 <!-- <span class="fenxiang" @click="showNav"></span> -->
             </div>
         </div>
         <van-popup v-model="topNavShow" position="top" class="top_nav">
@@ -20,7 +20,6 @@
             <van-cell title="添加用户" is-link to="userAdd" />
             <van-cell title="用户列表" is-link to="userList" />
             <van-cell title="PC访问授权" is-link to="userAuth" />
-        
         </van-popup>
     </div>
 </template>
@@ -112,7 +111,7 @@
             margin: 0 5px;
         }
         .iconfont {
-            font-size: 17px;
+            font-size: 20px;
             color: #000;
         }
         .top_nav {

@@ -142,14 +142,14 @@ const routes = [
       title: '授权列表'
     }
   },
-  // {
-  //   path: '/cir',
-  //   name: 'cir',
-  //   component: () => import('./view/demo/cir.vue'),
-  //   meta: {
-  //     title: '圆形'
-  //   }
-  // },
+  {
+    path: '/clientInfo',
+    name: 'clientInfo',
+    component: () => import('./view/users/clientInfo'),
+    meta: {
+      title: '客户信息'
+    }
+  },
 ];
 
 // add route path

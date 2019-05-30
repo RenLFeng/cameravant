@@ -7,16 +7,8 @@
       </ul>
     </div>
     <topNav>
-      <!-- <van-tabs v-model="tabDeviceSelected" color="#0091fa" @click="deviceSelectedChange">
-        <van-tab v-for="item in tabDeviceType" :title="item.text">
-        </van-tab>
-      </van-tabs> -->
-      <p v-if="!isNoDevice" class="all_device_init" @click="showDeviceListFn()">{{deviceTypeEd}}<i class="delta"></i></p>
+      <p v-if="!isNoDevice && isOpenDeviceList" class="all_device_init" @click="showDeviceListFn()">{{deviceTypeEd}}<i class="delta"></i></p>
     </topNav>
-    <!-- <div class="input_container flex" @click='deviceSelectPop=true'><span class="input_label">设备名称：</span><span class="input_shape">{{selectedDevice.device_inst_addr?selectedDevice.device_inst_addr:'全部'}}</span>
-      </div> -->
-    <!-- <div class="input_container flex" @click='timeTypeSelectPop=true'><span class="input_label">时间选择：</span><span class="input_shape">{{timetype.value==='4'?selectedDateTime[0]+'至'+selectedDateTime[1]:timetype.text}}</span>
-      </div> -->
       <p class="bac"></p>
     <van-tabs v-model="tabRangeTypeSelected" type="card" color="#0091fa" @change="timeTypeSelectConfirm">
       <van-tab v-for="(item,index) in rangeTypes" :title="item.text" :key="index">
@@ -25,31 +17,18 @@
     <!-- 性别区分 -->
     <div class="circle_box">
       <ul class="sex_contect">
-         <!-- <li :class="index==1?'margin_top':''" v-for="(item,index) in circleData.sexs" :key="index">
-         <van-circle
-        v-model="item['currentRateSex'+index]"
-        :color="item.sex=='男'?'#22CED4':'#FD3FB2'"
-        fill="#fff"
-        :rate="item.img_sum"
-        size="55px"
-        layer-color="#E0E4EB"
-        :speed="100"
-        :stroke-width="50"
-        :text="item['currentRateSex'+index].toFixed(0) + '%'"
-      /><span>{{item.sex}}</span>
-      </li> -->
       <li class="person_item"><span class="person_tit">总人数</span><span class="person_all" style="">{{circleData.sexs[0].sum}}</span></li>
       <li class="sex_icon_box sex_item">
         <ul class="">
           <li>
-            <span class="man"></span>
-            <span>{{circleData.sexs[0].img_sum}}<i class="fen">%</i></span>
+            <span class="man iconfont iconnan1"></span>
+            <span class="nb">{{circleData.sexs[0].img_sum}}<i class="fen">%</i></span>
           </li>
         </ul>
          <ul>
           <li>
-            <span class="gir"></span>
-         <span>{{circleData.sexs[1].img_sum}}<i class="fen">%</i></span>
+            <span class="gir iconfont iconnv1"></span>
+         <span class="nb">{{circleData.sexs[1].img_sum}}<i class="fen">%</i></span>
           </li>
         </ul>
       </li>
@@ -109,99 +88,52 @@
       </li>
       </ul>
     </div>
-
-<!-- ++++++++++++++++++++ -->
-
-    <!-- <van-popup v-model="deviceSelectPop" class="pop_p100" position="bottom">
-      <van-picker show-toolbar title="" :columns="deviceSeletedList" value-key="device_inst_addr" :default-index="0" @cancel="deviceSelectCancel"
-        @confirm="deviceSelectConfirm" />
-    </van-popup>
-    <van-popup v-model="timeTypeSelectPop" class="pop_p100" position="bottom">
-      <van-picker show-toolbar title="" :columns="rangeTypes" value-key="text" :default-index="0" @cancel="timeTypeSelectCancel"
-        @confirm="timeTypeSelectConfirm" />
-    </van-popup>
-    <van-popup v-model="dateTimePop" class="pop_p100" position="bottom" @close="confirmDateTime">
-      <inlineCalendar @change="dateTimeChange" mode="during" />
-    </van-popup>
-
-    <div class="two_charts flex" :class="agePieShow?'':'naught'">
-      <div style="width:20%;">
-        <div class="column_container" :class="genderPieShow?'':'naught'">
-          <div class="male_data" :style="{height:percent,}"><span class="num">男 {{maleNum?maleNum:0}}</span></div>
-          <div class="female_data" :style="{height:1-percent,}"><span class="num">女 {{(genderAll-maleNum)?(genderAll-maleNum):0}}</span></div>
-        </div>
-      </div>
-      <div style="width:80%;">
-        <div class="one_chart" :class="agePieShow?'':'naught'">
-          <canvas id="agePie"></canvas>
-        </div>
-      </div>
-    </div>
-    <empty class="grey" v-if="!agePieShow">
-      <span>客户性别年龄分布暂无数据</span>
-    </empty>
-    <div class="one_chart" :class="customerCountShow?'whole_chart':'naught'">
-      <div id="customerCount" class="whole_chart"></div>
-    </div>
-    <empty class="grey" v-if="!customerCountShow">
-      <span>客流量分析曲线暂无数据</span>
-    </empty>
-    <div class="one_chart" :class="imgstatPerhourShow?'':'naught'">
-      <div id="imgstatPerhour" class="whole_chart"></div>
-    </div>
-    <empty class="grey" v-if="!imgstatPerhourShow">
-      <span>分时客流量分析暂无数据</span>
-    </empty> --> 
-<!-- +++++++++++++++++++++++++ -->
-
-
-
 <!-- 备注编辑 -->
 <!-- <van-popup v-model="showWompile">
   <div class="wompile_box">
     <h3>添加备注</h3>
     <div class="wompile_info">
-      <p class="">苏通 <span>男&nbsp;28岁</span></p>
+      <p class="">fdgd <span>男&nbsp;28岁</span></p>
       <textarea v-model="textarea" name="" id="" cols="" rows="">不懂V塑说撒郭德纲</textarea>
     </div>
     <div class="history">
       <p>历史记录</p>
-      <ul>
-        <li>
-          <p class="text">共消费3900，三件，消费能力偏上</p>
-          <p class="time">2019-05-12</p>  
-        </li>
-         <li>
-          <p class="text">共消费4900，2件，消费能力偏上，给孩子买东西大手比</p>
-          <p class="time">2019-05-12</p>  
-        </li>
-      </ul>      
+      <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <ul>
+              <li v-for="(item,index) in historyList" :key="index">
+                <p class="text">{{item.text}}</p>
+                <p class="time">{{item.time}}</p>  
+              </li>
+          </ul>      
+      </van-list>
     </div>
   </div>
   <van-button round type="danger" @click="submitCompileFn()">确认</van-button>
 </van-popup> -->
-<!-- <button @click="sp()">click</button> -->
 <div class="swipe_container">
-   <van-swipe ref="sp" :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
+   <van-swipe ref="sp" :autoplay="0"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
       <van-swipe-item :key="index" v-for="(image, index) in imgList">
-        <div @click="compileFn(item)" class="img_container" v-for="(item,itmIndex) in image" :key="itmIndex" v-if="item.imgMd5">
-          <img :src="item.imgMd5+'?w=400&h=400'" class="img" />
+        <div @click="compileFn(item)" class="img_container" v-for="(item,itmIndex) in image" :key="itmIndex" v-if="item.img_md5">
+          <img :src="item.img_md5+'?w=400&h=400'" class="img" />
           <p class="note">
-            {{item.imgSex?'男':'女'}}　{{item.imgAge}}岁
-            <span>{{item.imgDatetime.replace(/(\S)*\s/,"")}}</span>
+            <span v-if="item.user_name" style="display:block">{{item.user_name}}({{item.user_type}})</span>
+            <span v-if="!item.user_name" style="display:block">{{item.user_type}}</span>
+            {{item.img_sex?'男':'女'}}　{{item.img_age}}岁
+            <span>{{item.datetime.replace(/(\S)*\s/,"")}}</span>
           </p>
         </div>
       </van-swipe-item>
     </van-swipe>
 </div>
-    <!-- <empty class="grey" v-else>
-      <span>暂无图片数据</span>
-    </empty> -->
   </div>
 </template>
 
 <script>
-// const format = rate => Math.min(Math.max(rate, 0), 100);
 let chart=void 0;
 let chart2=void 0;
   import {
@@ -213,7 +145,7 @@ let chart2=void 0;
     Popup,
     DatetimePicker,
     Field,
-    Tab, Tabs,Icon,Loading,Button
+    Tab, Tabs,Icon,Loading,Button,List,Dialog 
   } from 'vant';
   import echarts from "echarts";
   import F2 from "@antv/f2/lib/index-all";
@@ -222,8 +154,10 @@ let chart2=void 0;
   import { Search } from 'vant';
 
   export default {
-    components: {
-       [Button.name]: Button,
+    components: { 
+      [Dialog.name]: Dialog,
+      [List.name]: List,
+      [Button.name]: Button,
       [Circle.name]: Circle,
       [Cell.name]: Cell,
       [Swipe.name]: Swipe,
@@ -243,7 +177,12 @@ let chart2=void 0;
 
     data() {
       return {
+        compileData:{},
+        historyList: [],
+        loading: false,
+        finished: false,
         isNoDevice:false,
+        isOpenDeviceList:false,
         textarea:"",
         showWompile:false,
         customer_info:{},
@@ -426,9 +365,6 @@ let chart2=void 0;
           return data;
         }
       },
-    //   text() {
-    //   return this.currentRate.toFixed(0) + '%'
-    // }
     },
     created() {
       this.getCodeInit();
@@ -444,7 +380,7 @@ let chart2=void 0;
   },
     methods: {
       sp(){
-        this.$refs.sp.swipeTo(6);
+        // this.$refs.sp.swipeTo(6);
       },
       //初始化图表数据
       initFn(index){
@@ -476,17 +412,23 @@ let chart2=void 0;
       },
       //图片编辑备注
       compileFn(item){
-        this.showWompile=true
-        console.log(item);
-      },
-      // 提交备注
-      submitCompileFn(){
-          if(!this.textarea){
-            Toast('总得写点什么吧~~~');
-            return;
-          }
-          Toast('谢谢，你会记得我的~~~');
-           this.showWompile=false;
+        if(this.isVip){
+        this.setSession("compileData",item);
+             //跳转提交反馈页面
+                this.$router.push({
+                    name: 'clientInfo',
+                    query: {
+                        openid: window.sessionStorage.getItem('openid') || this.$route.query['openid'],
+                    }
+                })
+        }else{
+          // Dialog.alert({
+          //   message: '此功能仅供VIP用户开放'
+          // }).then(() => {
+          //   // on close
+          // });
+
+        }  
       },
     //展开设备列表
       showDeviceListFn(){
@@ -577,7 +519,7 @@ let chart2=void 0;
       var items = ev.items;
       items[0].name = null;
       items[0].name = items[0].title;
-      items[0].value = items[0].value+'人';
+      items[0].value = items[0].value+'%';
     }
   });
   //  chart2.guide().text({
@@ -600,7 +542,7 @@ let chart2=void 0;
   radius:[2]
   }).color('agegroup',function(val){
       switch(val){
-        case '18岁以下': return '#5A7BEF';
+        case '18以下': return '#5A7BEF';
         break;
         case '19-25': return '#F15887';
         break;
@@ -608,11 +550,11 @@ let chart2=void 0;
         break;
         case '36-45': return '#2DC9EB';
         break;
-        case '56岁以上': return '#FA9CBC';
+        case '46以上': return '#FA9CBC';
         break;
         default: return '5A7BEF'
       }
-  }).size(4);
+  }).size(8);
   chart2.render();
   }else{
     chart2.changeData(data);
@@ -686,7 +628,7 @@ let chart2=void 0;
         .then(res => {
           if (res.result === "true") {
             this.drw1Data = res.content;
-            if(!this.drw1Data.length) this.showCanvas=true;
+               this.showCanvas=true;
             let ticks=[];
           //  for(let i=0;i<this.drw1Data.length;i++){
           //    if(this.drw1Data[i].type=='今日'||this.drw1Data[i].type=='本周'||this.drw1Data[i].type=='本月'){
@@ -773,17 +715,19 @@ let chart2=void 0;
         return 'rgba(246,111,135,.3)';
       }
     }).shape('smooth').style({
-      lineWidth:3
+      lineWidth:2
     });
     chart.render();
             }else{
                chart.changeData(this.drw1Data);
             }
           } else {
+               this.showCanvas=true;
             console.log("err");
           }
         })
         .catch(err => {
+             this.showCanvas=true;
           console.log(err);
         });
     },
@@ -819,6 +763,7 @@ let chart2=void 0;
         } else {
           data.openId = window.sessionStorage.getItem('openid');
         }
+      
         this.axios.post(this.api.wechatDevice, {
           data
         }).then(res => {
@@ -849,10 +794,11 @@ let chart2=void 0;
               this.isNoDevice=true;
               this.deviceTypeEd='';
         }
-         }
-            this.initFn(this.tabRangeTypeSelected);
-            this.getPageData(this.deviceidsArr);
-            this.getCustomerFn(this.openid,this.deviceidsArr)
+     }
+          this.initFn(this.tabRangeTypeSelected);
+          this.getPageData(this.deviceidsArr);
+          this.getCustomerFn(this.openid,this.deviceidsArr)
+          this.isOpenDeviceList=true;
           } else {
             that.$toast(res.message);
           }
@@ -1614,13 +1560,15 @@ let chart2=void 0;
                      font-size: 12px;
                    font-family: inherit;
                    }
-                 &.man{
-                   background: url(../../assets/man.png) no-repeat;
-                   background-size: 90%;
+                 &.man, &.gir{
+                       font-size: 28px;
+                      color: rgba(67, 207, 213,.5);
                  }
                  &.gir{
-                    background: url(../../assets/gir.png) no-repeat;
-                   background-size: 90%;
+                    color:  rgba(245, 62, 179,.5);
+                 }
+                 &.nb{
+                   line-height: 36px;
                  }
               }
             }
@@ -1809,6 +1757,7 @@ let chart2=void 0;
       padding:4px 0;
       text-align: center;
       width: 97%;
+      height: 30vh;
     // box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
     border-radius: 15px;
     margin: 0 auto;
@@ -1817,6 +1766,12 @@ let chart2=void 0;
       display: block;
       content: "";
       clear: both;
+    }
+    .van-swipe__indicator{
+      background: #333;
+    }
+    .van-swipe__indicator--active{
+     background-color: #1989fa;
     }
       .img_container {
         display: inline-block;
@@ -1830,8 +1785,8 @@ let chart2=void 0;
           border-radius: 10px;
         }
         .note {
-          position: relative;
-    bottom: 13px;
+    position: relative;
+    bottom: 10px;
     left: 0.05333rem;
     width: 100%;
     background:rgba(239,241,245,1);
@@ -1845,7 +1800,7 @@ let chart2=void 0;
     margin: 0;
     z-index: -111;
     span{
-      padding-top: 5px;
+      // padding-top: 5px;
     }
         }
       }
@@ -1918,6 +1873,9 @@ let chart2=void 0;
           }
         }
         .history{
+          height: 200px;
+          max-height: 200px;
+          overflow: scroll;
           ul{
             font-size: 12px;
             li{

@@ -34,16 +34,16 @@
       <canvas :id="`myChart3${concut}`" class="canvas3"  width height="255px"></canvas>
       <span class="not-data" v-if="drw3Data==''">暂无数据...</span>
     </div>
-    <van-actionsheet v-model="show" :actions="columns" cancel-text="取消" @select="onSelect"/>
- <!-- <van-popup v-model="show">
- <van-picker
-  show-toolbar
-  title="请选择员工"
-  :columns="columns[user_name]"
-  @cancel="onCancel"
-  @confirm="onSelect"
-/>
- </van-popup> -->
+    <!-- <van-actionsheet v-model="show" :actions="columns" cancel-text="取消" @select="onSelect"/> -->
+ <van-popup v-model="show" position="bottom">
+    <van-picker
+      show-toolbar
+      title="请选择员工"
+      :columns="columns"
+      @cancel="selet"
+      @confirm="onSelect"
+    />
+ </van-popup>
  
 
   </div>
@@ -115,7 +115,6 @@ export default {
       drw1Data: [],
       drw2Data: [],
       drw3Data: [],
-      init:true,
       concut:1
     };
   },
@@ -422,6 +421,12 @@ export default {
         .then(res => {
           if (res.result) {
             this.drw2Data = res.content;
+            let ticks =[];
+            for(var i=0;i<this.drw2Data.length;i++){
+              ticks[i]=this.drw2Data[i].value
+            }
+           
+           
             //  this.drw2Data=[
             //   {value: 15.1, userName: '张三1'},
             //   { value: 10.48, userName: '张2'},
@@ -454,8 +459,8 @@ export default {
               },
               value: {
                 // tickCount: 5,
-                min: 1,
-                // ticks:[2,3,4,5,6,8]
+                // min: 1,
+                ticks:ticks
                 // max:100
               }
             };
@@ -545,25 +550,24 @@ export default {
             this.columns=[];
             for (var i = 0; i < temp.length; i++) {
               this.columns.push({
-                name: temp[i].user_name,
-                id: temp[i].user_id,
+                "text": temp[i].user_name,
+                "id": temp[i].user_id,
               });
             }
             this.drw3Init(this.columns[0].id);
-            this.seleed = this.columns[0].name;
+            this.seleed = this.columns[0].text;
           } else {
           }
         }).catch(err => {});
     },
-    //选择员工button
+    //弹出员工选择框
     selet() {
-      this.show = true;
+      this.show = !this.show;
     },
     //选择员工
     onSelect(item) {
       this.show = false;
-      this.seleed = item.name;
-      this.init=false;
+      this.seleed = item.text;
           //   let canvas3Box=document.querySelector("#canvas3-box");
           //   let remoEl=document.querySelector('#myChart3'+this.concut);
           //   canvas3Box.removeChild(remoEl);
@@ -572,7 +576,6 @@ export default {
           //   el.id = 'myChart3'+this.concut;
           // canvas3Box.appendChild(el);
       this.drw3Init(item.id);
-      
     },
      onCancel() {
       Toast('取消');

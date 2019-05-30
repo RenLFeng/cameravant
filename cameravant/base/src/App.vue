@@ -9,16 +9,33 @@
         window.sessionStorage.setItem('appid', 'wxac2693b644b34e48');
        // window.sessionStorage.setItem('openid', 'ooiMn1pH2LsgHSeKcwRjprA9e300');
         // ooiMn1lFrWjvu6YCxM19eqRURv7k
+        // ooiMn1gVKsN5enz47VRdvMyZb9p0
       }
     }
   </script>
   <style lang="less">
-@import "../public/public.less";
     @import "../public/iconfont/iconfont.css";
+    @import"//at.alicdn.com/t/font_1205549_7e5rzumbjrr.css";
     body {
       font-size: 16px;
       background-color: #f8f8f8;
       -webkit-font-smoothing: antialiased;
+       .common{
+        background:#fff;
+        color: #758391;
+        font-size: 16px;
+        padding: 0 10px;
+      }
+      .but_box{
+          padding: 0 16px;
+          margin: 0 auto;
+      }
+      .van-button--info{
+          background: #5a7aef;
+      }
+      .van-button--large{
+          border-radius: 0.4rem;
+      }
     }
   
     .flex {

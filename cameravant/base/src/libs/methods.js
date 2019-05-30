@@ -108,7 +108,7 @@ export default {
       } else {
         return null;
       }
-    }
+    };
     //getVueUrlParam
     Vue.prototype.getVueUrlParam = function (name) {
       const after = window.location.hash.split("?")[1];
@@ -121,7 +121,25 @@ export default {
           return null;
         }
       }
-    }
+    };
+    //get sessionStorage
+    Vue.prototype.getSession=function(item){
+      let sObj=window.sessionStorage.getItem(item);
+        return JSON.parse(sObj);
+    };
+     //set sessionStorage
+    Vue.prototype.setSession=function(item,objet){
+      window.sessionStorage.setItem(item,JSON.stringify(objet))
+    };
+    //get localStorage
+    Vue.prototype.getLocal=function(item){
+      let sObj=window.localStorage.getItem(item);
+      return JSON.parse(sObj);
+    };
+     //set localStorage
+    Vue.prototype.setLocal=function(item,objet){
+      window.localStorage.setItem(item,JSON.stringify(objet))
+    };
     //OpenId
     Vue.prototype.getCode = function (local) {
       const that = this;

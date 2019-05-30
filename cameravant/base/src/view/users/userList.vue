@@ -2,6 +2,7 @@
     <div class="feedback user_list">
         <van-tabs v-model="tabUserTypeSelected" color="#0091fa" @change="tabChange" v-if="Object.keys(userTypes).length>0">
             <van-tab v-for="(item,index) in userTypes" :title="item.userType">
+                <span class="iconfont icontianjia add_usericon" @click="goUserAdd"></span>
                 <div class="ul_container">
                     <ul class="feedback_list" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading"
                         infinite-scroll-distance="50" v-if="Object.keys(userList).length>0">
@@ -21,7 +22,7 @@
                         </li>
                     </ul>
   <div class="add_box">
-                 <van-button type="info" size="large" @click="goUserAdd" class="btn add_user">添加用户</van-button>
+                 <!-- <van-button type="info" size="large" @click="goUserAdd" class="btn add_user">添加用户</van-button> -->
         </div>
                     <!-- <empty v-else> -->
                         <!-- <span>暂无此类型用户，先去<span class="blue" @click="goUserAdd">添加用户</span>吧~</span> -->
@@ -29,11 +30,11 @@
                 </div>
             </van-tab>
         </van-tabs>
-        <!-- <empty v-else>
+        <empty v-else>
             <span >暂无此用户，先去<span class="blue" @click="goUserAdd">添加用户</span>吧~</span>
-        </empty> -->
+        </empty>
    
-        <van-popup v-model="popEdit" class="pop_detail" :modal="false" v-if="Object.keys(editItem).length>0">
+        <van-popup v-model="popEdit"  position="right" class="pop_detail" :modal="false" v-if="Object.keys(editItem).length>0">
             <userEdit :item="editItem" @editSuc="listUpdate"></userEdit>
         </van-popup>
    
@@ -91,6 +92,11 @@
             this.getOpenId();
         },
         mounted() {
+              if (window.history && window.history.pushState) {
+                    // 向历史记录中插入了当前页
+                    history.pushState(null, null, document.URL);
+                    window.addEventListener('popstate', this.goBack, false);
+              }
         },
         methods: {
             //加载更多
@@ -258,9 +264,15 @@
                 this.getUserList();
                 this.getOwntype();
             },
+           goBack(){
+                this.popEdit=false;
+            },
         },
         computed: {
-        }
+        },
+        destroyed () {
+                window.removeEventListener('popstate', this.goBack, false);
+}
     }
 </script>
 
@@ -411,14 +423,21 @@
     padding-top: 0;
 }
 .user_list .van-tab{
-    line-height: 40px;
+    line-height: 33px;
 }
 .user_list .van-tabs__content{
     margin-top: 10px;
+    position: relative;
 }
 .user_list .van-tabs__wrap{
     /* padding: 10px 0; */
-    padding:10px 15px 0;
+    padding:10px 45px 0;
+}
+.user_list .add_usericon {
+    position: absolute;
+    right: 0.29333rem;
+    top: -9vw;
+    z-index: 100;
 }
 .user_list .van-tab--active {
     background: -webkit-linear-gradient(135deg,rgba(64,72,239,1) 0%,rgba(90,123,239,1) 100%);

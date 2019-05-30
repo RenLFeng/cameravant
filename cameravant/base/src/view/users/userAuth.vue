@@ -1,22 +1,30 @@
 <template>
-    <div class="feedback">
-        <p class="note">用户需要设置好WEB登录的手机号码和密码后才能登录WEB管理平台，网址是<a href="http://www.isafeiot.com">http://www.isafeiot.com</a></p>
-        <div class="field">
-            <div class="type flex">
-                <van-field v-model="phone" placeholder="请输入手机号码" size="large" required />
-                <van-field v-model="verificationCode" placeholder="请输入验证码" size="large" required>
-                    <van-button slot="button" size="small" type="primary" :disabled="cutDown.hasSend" @click="getVerifyCode">{{cutDown.hasSend
-                        ? ('剩余 '+ cutDown.time + ' s') : '发送验证码'}}</van-button>
-                </van-field>
-                <van-field v-model="password" placeholder="请输入密码" size="large" type="password" required />
+    <div class="feedback common">
+        <div v-if="istrue">
+            <p style="padding:0 16px;">此账户已授权PC访问，WEB管理平台账户为：{{phone?phone:phone2}} 网址是<a href="http://www.isafeiot.com">http://www.isafeiot.com</a></p>
+            <div class="btn_container">
+                <van-button type="info" size="large" @click="setChangeIsauthFn" class="btn">解绑</van-button>
             </div>
         </div>
-        <div class="btn_container">
-            <van-button type="info" size="large" @click="userAdd" class="btn">添加</van-button>
+        <div v-if="!istrue && isShow">
+            <p class="note">用户需要设置好WEB登录的手机号码和密码后才能登录WEB管理平台，网址是<a href="http://www.isafeiot.com">http://www.isafeiot.com</a></p>
+            <div class="field">
+                <div class="type flex">
+                    <van-field v-model="phone" placeholder="请输入手机号码" size="large" required />
+                    <van-field v-model="verificationCode" placeholder="请输入验证码" size="large" required>
+                        <van-button slot="button" size="small" type="info" :disabled="cutDown.hasSend" @click="getVerifyCode">{{cutDown.hasSend
+                            ? ('剩余 '+ cutDown.time + ' s') : '发送验证码'}}</van-button>
+                    </van-field>
+                    <van-field v-model="password" placeholder="请输入密码" size="large" type="password" required />
+                </div>
+            </div>
+            <div class="btn_container">
+                <van-button type="info" size="large" @click="userAdd" class="btn">添加</van-button>
+            </div>
+            <van-popup v-model="picListPop" position="right" class="whole_pop">
+                <picList :childOpenid="openid" @receivePicInfo="showPic"></picList>
+            </van-popup>
         </div>
-        <van-popup v-model="picListPop" position="right" class="whole_pop">
-            <picList :childOpenid="openid" @receivePicInfo="showPic"></picList>
-        </van-popup>
     </div>
 </template>
 
@@ -26,6 +34,7 @@
         Popup,
         Button,
         Field,
+        Dialog 
     } from 'vant';
     export default {
         components: {
@@ -33,10 +42,14 @@
             [Popup.name]: Popup,
             [Button.name]: Button,
             [Field.name]: Field,
+              [Dialog.name]: Dialog,
         },
         name: 'userAdd',
         data() {
             return {
+                isShow:false,
+                phone2:"",
+                istrue:false,
                 openid: window.sessionStorage.getItem('openid') || this.$route.query['openid'],
                 popEdit: false,
                 picListPop: false,
@@ -51,6 +64,7 @@
                 phone: '',
                 verificationCode: null,
                 password: '',
+                timer:null
             }
         },
         created() {
@@ -63,8 +77,48 @@
             getOpenId() {
                 this.getCode(this.api.server + '/#/userAdd').then(resolve => {
                     this.openid = resolve;
+                    let data ={
+                        "openId":resolve
+                    }
+                    this.axios.post(this.api.getUserIsauth,{data}).then(res=>{
+                        
+                        if(res.result=='true'){
+                            if(res.content){
+                                this.istrue=true;
+                                this.phone2=res.content;
+                            }
+                        }else{
+                             this.isShow=true;
+                        }
+                    })
                 });
             },
+            //解授权
+            setChangeIsauthFn(){
+                let data ={
+                        "openId":this.openid
+                    }
+                    Dialog.confirm({
+                            title: '解授权',
+                            message: '您确定要解除授权吗？'
+                            }).then(() => {
+                           this.axios.post(this.api.setUserCancelauth,{data}).then(res=>{
+                        if(res.result=='true'){
+                             this.$toast('解除授权成功');
+                            this.istrue=false;
+                             this.isShow=true;
+                             this.password='';
+                            this.verificationCode='';
+                        }else{
+                              that.$toast(res.message);
+                        }
+                    })
+                            }).catch(() => {
+                            // on cancel
+                    });
+                   
+            },
+            //授权
             userAdd() {
                 const that = this;
                 const phone = this.phone;
@@ -76,12 +130,12 @@
                     this.$toast("请输入正确格式的手机号码");
                     return;
                 }
-                if (!this.password) {
-                    this.$toast("请输入密码");
+                  if (!this.verificationCode) {
+                    this.$toast('请输入验证码！');
                     return;
                 }
-                if (!this.verificationCode) {
-                    this.$toast('请输入验证码！');
+                if (!this.password) {
+                    this.$toast("请输入密码");
                     return;
                 }
                 this.axios.post(this.api.userVerifyCode, {
@@ -109,6 +163,11 @@
                     }).then(res => {
                         if (res.result === "true") {
                             that.$toast('账户授权成功');
+                           const cutDown = this.cutDown;
+                            clearTimeout(that.timer);
+                            cutDown.hasSend = false;
+                            cutDown.time = 60;
+                              this.istrue=true;
                         } else {
                             that.$toast(res.message);
                         }
@@ -145,13 +204,14 @@
                     window.console.log(err);
                 });
             },
-            // 倒计时函数
-            countDownTime() {
+            // 倒计时函数 13267080205
+              countDownTime() {
+                  let that=this;
                 const cutDown = this.cutDown;
                 const fnCount = () => {
-                    const count = setTimeout(() => {
+                    that.timer = setTimeout(() => {
                         if (cutDown.time <= 0) {
-                            clearTimeout(count);
+                            clearTimeout(that.timer);
                             cutDown.hasSend = false;
                             cutDown.time = 60;
                         } else {
@@ -162,6 +222,22 @@
                 };
                 fnCount();
             },
+            // countDownTime() {
+            //     const cutDown = this.cutDown;
+            //     const fnCount = () => {
+            //         const count = setTimeout(() => {
+            //             if (cutDown.time <= 0) {
+            //                 clearTimeout(count);
+            //                 cutDown.hasSend = false;
+            //                 cutDown.time = 60;
+            //             } else {
+            //                 cutDown.time -= 1;
+            //                 fnCount();
+            //             }
+            //         }, 1000);
+            //     };
+            //     fnCount();
+            // },
         },
         computed: {
         }
