@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback device_list" v-if="Object.keys(deviceList).length>0">
+    <div class="feedback device_list common" v-if="Object.keys(deviceList).length>0">
         <van-tabs v-model="tabDeviceSelected" color="#0091fa" style="padding:10px 20px;">
             <van-tab title="我的设备" class="">
                 <ul class="feedback_list">
@@ -76,9 +76,13 @@
                 <van-button type="default" size="large" @click="submit" class="btn">提交</van-button>
             </div>
         </van-popup>
-        <div class="add_device" @click="goDeviceAdd">
+        <!-- <div class="add_device add" @click="goDeviceAdd">
             <span class="iconfont icon-tianjiashebei"></span>添加设备
+        </div> -->
+        <div class="but_box">
+             <van-button type="info" size="large" class="btn" @click="goDeviceAdd">添加设备</van-button>
         </div>
+
     </div>
     <empty v-else>
         <span>暂无设备，先去<span class="blue" @click="goDeviceAdd">添加设备</span>吧~</span>
@@ -380,10 +384,14 @@
                 font-size: 30px;
             }
         }
-        .add_device[data-v-fcebbbc8]{
-            background: #5a7aef;
-                border-radius: 0.4rem;
-        }
+        // .add_device[data-v-fcebbbc8]{
+        //     background: #5a7aef;
+        //         border-radius: 0.4rem;
+        // }
+        //  .add_device.add{
+        //     background: #5a7aef !important;
+        //         border-radius: 0.4rem !important;
+        // }
         .pop_detail {
             width: 100%;
             height: 100%;
@@ -460,5 +468,9 @@
              width: 80%;
             height: 100%;
             margin: 0 auto;
+        }
+    .device_list .add_device.add{
+            background: #5a7aef !important;
+            border-radius: 0.4rem !important;
         }
 </style>

@@ -17,7 +17,10 @@
     <!-- 性别区分 -->
     <div class="circle_box">
       <ul class="sex_contect">
-      <li class="person_item"><span class="person_tit">总人数</span><span class="person_all" style="">{{circleData.sexs[0].sum}}</span></li>
+      <li class="person_item">
+        <span class="person_tit">总人数</span>
+        <span class="person_all" style="">{{circleData.sexs[0].sum?circleData.sexs[0].sum:'0'}}</span>
+        </li>
       <li class="sex_icon_box sex_item">
         <ul class="">
           <li>
@@ -54,7 +57,7 @@
       <span class="not-data" v-if="!drw1Data.length && showCanvas">暂无分析数据...</span>
     </div>
     <!-- //客户类型 circle-->
-    <div class="customer_box" v-if="isVip">
+    <div class="customer_box" v-if="isVip=='true'">
        <ul class="item_left">
           <li v-for="(item,index) in customer[0]"  :key="index">
          <van-circle
@@ -87,44 +90,18 @@
       <span>{{item.name}}</span> 
       </li>
       </ul>
-    </div>
-<!-- 备注编辑 -->
-<!-- <van-popup v-model="showWompile">
-  <div class="wompile_box">
-    <h3>添加备注</h3>
-    <div class="wompile_info">
-      <p class="">fdgd <span>男&nbsp;28岁</span></p>
-      <textarea v-model="textarea" name="" id="" cols="" rows="">不懂V塑说撒郭德纲</textarea>
-    </div>
-    <div class="history">
-      <p>历史记录</p>
-      <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-        >
-          <ul>
-              <li v-for="(item,index) in historyList" :key="index">
-                <p class="text">{{item.text}}</p>
-                <p class="time">{{item.time}}</p>  
-              </li>
-          </ul>      
-      </van-list>
-    </div>
   </div>
-  <van-button round type="danger" @click="submitCompileFn()">确认</van-button>
-</van-popup> -->
 <div class="swipe_container">
-   <van-swipe ref="sp" :autoplay="0"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
+   <van-swipe ref="sp" :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
       <van-swipe-item :key="index" v-for="(image, index) in imgList">
         <div @click="compileFn(item)" class="img_container" v-for="(item,itmIndex) in image" :key="itmIndex" v-if="item.img_md5">
           <img :src="item.img_md5+'?w=400&h=400'" class="img" />
           <p class="note">
-            <span v-if="item.user_name" style="display:block">{{item.user_name}}({{item.user_type}})</span>
+            <span v-if="item.user_name" style="display:block">{{item.user_name.length>=5?strFn(item.user_name):item.user_name}}({{item.user_type}})</span>
             <span v-if="!item.user_name" style="display:block">{{item.user_type}}</span>
             {{item.img_sex?'男':'女'}}　{{item.img_age}}岁
-            <span>{{item.datetime.replace(/(\S)*\s/,"")}}</span>
+            <!-- <span>{{item.datetime.replace(/(\S)*\s/,"")}}</span> -->
+            <span style="display:block">{{item.datetime | formatDate}} &nbsp;{{item.count?item.count+'次':''}}</span>
           </p>
         </div>
       </van-swipe-item>
@@ -177,6 +154,8 @@ let chart2=void 0;
 
     data() {
       return {
+        vipShow:false,
+        // isVip:'',
         compileData:{},
         historyList: [],
         loading: false,
@@ -412,7 +391,7 @@ let chart2=void 0;
       },
       //图片编辑备注
       compileFn(item){
-        if(this.isVip){
+        if(this.isVip=='true'){
         this.setSession("compileData",item);
              //跳转提交反馈页面
                 this.$router.push({
@@ -632,8 +611,15 @@ let chart2=void 0;
             let ticks=[];
           //  for(let i=0;i<this.drw1Data.length;i++){
           //    if(this.drw1Data[i].type=='今日'||this.drw1Data[i].type=='本周'||this.drw1Data[i].type=='本月'){
-          //       ticks[i]=this.drw1Data[i].count;
+          //       ticks[i]=this.drw1Data[i].img_sum;
           //    }
+          //  }
+          
+          //  let max=ticks[0];
+          //     for(let i=0;i<ticks.length;i++){
+          //       if(ticks[i]>max){
+          //         max=ticks[i]
+          //       }
           //  }
             if(!chart){
 
@@ -652,9 +638,9 @@ let chart2=void 0;
                 // type: 'timeCat',
                 // mask: "hh:mm",
                 // range: [0, 1],
-                // ticks:[0,2,4,6,8,10,12,14,16,18,20,22,24],
-                // tickCount:5,
-                // max: 100,
+                // ticks:ticks,
+                // tickCount:6,
+                // max: max,
                 // min: 0,
                 formatter: function formatter(ivalue) {
                   return ivalue
@@ -720,6 +706,8 @@ let chart2=void 0;
     chart.render();
             }else{
                chart.changeData(this.drw1Data);
+                chart.source(this.drw1Data, {
+            });
             }
           } else {
                this.showCanvas=true;
@@ -1438,8 +1426,24 @@ let chart2=void 0;
           }
         })
       },
-
-    }
+    },
+   filters:{
+        formatDate:function (val) {
+            var value=new Date(val.replace(/-/g, "/"));
+            var year=value.getFullYear();
+            var month=value.getMonth()+1;
+            var day=value.getDate();
+            var hour=value.getHours();
+            var minutes=value.getMinutes();
+            var seconds=value.getSeconds();
+              month < 10 && (month = "0" + month);
+              day < 10 && (day = "0" + day);
+                hour < 10 && (hour = "0" + hour);
+              minutes < 10 && (minutes = "0" + minutes);
+               seconds < 10 && (seconds = "0" + seconds);
+            return hour+':'+minutes;
+        }
+   },
   };
 </script>
 

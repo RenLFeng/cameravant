@@ -425,6 +425,9 @@
                     /* padding: 14px 16px 0; */
                     padding: 14px 0 0;
                     font-size: 12px !important;
+                .upload[data-v-129c7e7e]{
+                    color: #5a7aef;
+                }
                     .upload {
                         margin: 10px 16px 12px;
                         padding: 10px 0;
@@ -536,4 +539,7 @@
     .mint-cell-wrapper {
         font-size: 14px;
     }
+    .van-button--info{
+          background: #5a7aef!important;
+      }
 </style>

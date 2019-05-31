@@ -245,7 +245,6 @@
             priceCgange(){
                 let len=this.price.length
                     for(var i=0;i<len;i++){
-
                         if(isNaN(this.price[i])&&this.price[i]!='.'){
                             this.price=this.price.substr(0,i);
                             return;

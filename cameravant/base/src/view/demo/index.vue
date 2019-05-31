@@ -8,18 +8,21 @@
     <!-- 性别区分 -->
     <div class="circle_box">
       <ul class="sex_contect">
-      <li class="person_item"><span class="person_tit">总人数</span><span class="person_all" style="">{{circleData.sexs[0].sum}}</span></li>
+      <li class="person_item">
+        <span class="person_tit">总人数</span>
+        <span class="person_all" style="">{{circleData.sexs[0].sum?circleData.sexs[0].sum:'0'}}</span>
+        </li>
       <li class="sex_icon_box sex_item">
         <ul class="">
           <li>
-            <span class="man"></span>
-            <span>{{circleData.sexs[0].img_sum}}<i class="fen">%</i></span>
+             <span class="man iconfont iconnan1"></span>
+            <span class="nb">{{circleData.sexs[0].img_sum}}<i class="fen">%</i></span>
           </li>
         </ul>
          <ul>
           <li>
-            <span class="gir"></span>
-         <span>{{circleData.sexs[1].img_sum}}<i class="fen">%</i></span>
+             <span class="gir iconfont iconnv1"></span>
+         <span class="nb">{{circleData.sexs[1].img_sum}}<i class="fen">%</i></span>
           </li>
         </ul>
       </li>
@@ -44,78 +47,22 @@
       </canvas>
       <span class="not-data" v-if="!drw1Data.length && showCanvas">暂无分析数据...</span>
     </div>
-    <!-- //客户类型 circle-->
-    <!-- <div class="customer_box" >
-       <ul class="item_left">
-          <li v-for="(item,index) in customer[0]"  :key="index">
-         <van-circle
-       v-model="item['currentRateAge'+index]"
-        :color="index==0?'#FA878D':index==1?'#5068EF':index==2?'#8F6AFF':index==3?'#15D2B9':index==4?'#685CFF':index==5?'#FF9E76':index==6?'':''"
-        fill="#fff"
-        :rate="item.count"
-        size="55px"
-        layer-color="#E0E4EB"
-        :speed="100"
-        :stroke-width="50"
-       :text="item['currentRateAge'+index].toFixed(0) + '%'"
-      />
-      <span>{{item.name}}</span> 
-    </li> 
-      </ul>
-      <ul class="item_right">
-           <li v-for="(item,index) in customer[1]"  :key="index">
-         <van-circle
-       v-model="item['currentRateAge'+index]"
-        :color="index==0?'#4049EF':index==1?'#FB8C87':index==2?'#414AEF':index==3?'#F780A2':index==4?'#685CFF':index==5?'#FF9E76':index==6?'':''"
-        fill="#fff"
-        :rate="item.count"
-        size="55px"
-        layer-color="#E0E4EB"
-        :speed="100"
-        :stroke-width="50"
-       :text="item['currentRateAge'+index].toFixed(0) + '分'"
-      />
-      <span>{{item.name}}</span> 
-      </li>
-      </ul>
-    </div> -->
-<!-- 备注编辑 -->
-<!-- <van-popup v-model="showWompile">
-  <div class="wompile_box">
-    <h3>添加备注</h3>
-    <div class="wompile_info">
-      <p class="">苏通 <span>男&nbsp;28岁</span></p>
-      <textarea v-model="textarea" name="" id="" cols="" rows="">不懂V塑说撒郭德纲</textarea>
-    </div>
-    <div class="history">
-      <p>历史记录</p>
-      <ul>
-        <li>
-          <p class="text">共消费3900，三件，消费能力偏上</p>
-          <p class="time">2019-05-12</p>  
-        </li>
-         <li>
-          <p class="text">共消费4900，2件，消费能力偏上，给孩子买东西大手比</p>
-          <p class="time">2019-05-12</p>  
-        </li>
-      </ul>      
-    </div>
-  </div>
-  <van-button round type="danger" @click="submitCompileFn()">确认</van-button>
-</van-popup> -->
-
-
-   <van-swipe :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
+ <div class="swipe_container">
+   <van-swipe ref="sp" :autoplay="3000"  class="swipe" v-if="imgListShow && tabRangeTypeSelected==0">
       <van-swipe-item :key="index" v-for="(image, index) in imgList">
-        <div @click="compileFn(item)" class="img_container" v-for="(item,itmIndex) in image" :key="itmIndex" v-if="item.imgMd5">
-          <img :src="item.imgMd5+'?w=400&h=400'" class="img" />
+        <div @click="compileFn(item)" class="img_container" v-for="(item,itmIndex) in image" :key="itmIndex" v-if="item.img_md5">
+          <img :src="item.img_md5+'?w=400&h=400'" class="img" />
           <p class="note">
-            {{item.imgSex?'男':'女'}}　{{item.imgAge}}岁
-            <span>{{item.imgDatetime.replace(/(\S)*\s/,"")}}</span>
+            <span v-if="item.user_name" style="display:block">{{item.user_name.length>=5?strFn(item.user_name):item.user_name}}({{item.user_type}})</span>
+            <span v-if="!item.user_name" style="display:block">{{item.user_type}}</span>
+            {{item.img_sex?'男':'女'}}　{{item.img_age}}岁
+            <!-- <span>{{item.datetime.replace(/(\S)*\s/,"")}}</span> -->
+            <span style="display:block">{{item.datetime | formatDate}}</span>
           </p>
         </div>
       </van-swipe-item>
     </van-swipe>
+</div>
     <!-- <empty class="grey" v-else>
       <span>暂无图片数据</span>
     </empty> -->
@@ -561,8 +508,8 @@ let chart2=void 0;
   chart2.interval().position('agegroup*img_sum').style({
   radius:[2]
   }).color('agegroup',function(val){
-      switch(val){
-        case '18岁以下': return '#5A7BEF';
+       switch(val){
+        case '18以下': return '#5A7BEF';
         break;
         case '19-25': return '#F15887';
         break;
@@ -570,11 +517,11 @@ let chart2=void 0;
         break;
         case '36-45': return '#2DC9EB';
         break;
-        case '56岁以上': return '#FA9CBC';
+        case '46以上': return '#FA9CBC';
         break;
         default: return '5A7BEF'
       }
-  }).size(4);
+  }).size(8);
   chart2.render();
   }else{
     chart2.changeData(data);
@@ -1343,9 +1290,28 @@ let chart2=void 0;
         })
       },
 
-    }
+    },
+     filters:{
+        formatDate:function (val) {
+            var value=new Date(val.replace(/-/g, "/"));
+            var year=value.getFullYear();
+            var month=value.getMonth()+1;
+            var day=value.getDate();
+            var hour=value.getHours();
+            var minutes=value.getMinutes();
+            var seconds=value.getSeconds();
+              month < 10 && (month = "0" + month);
+              day < 10 && (day = "0" + day);
+                hour < 10 && (hour = "0" + hour);
+              minutes < 10 && (minutes = "0" + minutes);
+               seconds < 10 && (seconds = "0" + seconds);
+            return hour+':'+minutes;
+        }
+   },
+
   };
 </script>
+
 
 <style lang="less">
   @import "../../../public/icon_family/icon_family.css";
@@ -1354,6 +1320,7 @@ let chart2=void 0;
     font-size: 14px;
     padding-bottom: 20px;
     position: relative;
+     margin-top: 12px;
     .van-tabs__wrap{
       top:-14px;
       padding: 8px 8px 12px 8px;
@@ -1464,13 +1431,15 @@ let chart2=void 0;
                      font-size: 12px;
                    font-family: inherit;
                    }
-                 &.man{
-                   background: url(../../assets/man.png) no-repeat;
-                   background-size: 90%;
+                 &.man, &.gir{
+                       font-size: 28px;
+                      color: rgba(67, 207, 213,.5);
                  }
                  &.gir{
-                    background: url(../../assets/gir.png) no-repeat;
-                   background-size: 90%;
+                    color:  rgba(245, 62, 179,.5);
+                 }
+                 &.nb{
+                   line-height: 36px;
                  }
               }
             }
@@ -1659,6 +1628,7 @@ let chart2=void 0;
       padding:4px 0;
       text-align: center;
       width: 97%;
+      height: 30vh;
     // box-shadow: 0 0.08rem 0.77333rem 0 rgba(59, 74, 116, 0.14);
     border-radius: 15px;
     margin: 0 auto;
@@ -1667,6 +1637,12 @@ let chart2=void 0;
       display: block;
       content: "";
       clear: both;
+    }
+    .van-swipe__indicator{
+      background: #333;
+    }
+    .van-swipe__indicator--active{
+     background-color: #1989fa;
     }
       .img_container {
         display: inline-block;
@@ -1680,8 +1656,8 @@ let chart2=void 0;
           border-radius: 10px;
         }
         .note {
-          position: relative;
-    bottom: 13px;
+    position: relative;
+    bottom: 10px;
     left: 0.05333rem;
     width: 100%;
     background:rgba(239,241,245,1);
@@ -1695,7 +1671,7 @@ let chart2=void 0;
     margin: 0;
     z-index: -111;
     span{
-      padding-top: 5px;
+      // padding-top: 5px;
     }
         }
       }
@@ -1768,6 +1744,9 @@ let chart2=void 0;
           }
         }
         .history{
+          height: 200px;
+          max-height: 200px;
+          overflow: scroll;
           ul{
             font-size: 12px;
             li{
@@ -1800,7 +1779,6 @@ let chart2=void 0;
 </style>
 <style lang="less">
 .device {
-    margin-top: 13px;
   .van-circle__layer{
         transform: rotate(0deg);
   }

@@ -140,6 +140,13 @@ export default {
     Vue.prototype.setLocal=function(item,objet){
       window.localStorage.setItem(item,JSON.stringify(objet))
     };
+    //字符串脱敏
+    Vue.prototype.strFn=function(val){
+      let str='';
+      let first=val.substr(0,1);
+      let laist=val.substr(val.length-1,1);
+      return str=first+'**'+laist;
+    },
     //OpenId
     Vue.prototype.getCode = function (local) {
       const that = this;
@@ -169,8 +176,12 @@ export default {
                 // alert('134'+JSON.stringify(res));
                 if(res.result=='true'){
                   window.sessionStorage.setItem('openid', res.content.openId);
-                  window.sessionStorage.setItem('isVip', res.content.isVip);
-                  Vue.prototype.isVip=res.content.isVip;
+                  if(res.content.isVip){
+                      window.sessionStorage.setItem('isVip',true);
+                  }else{
+                    window.sessionStorage.setItem('isVip',false);
+                  }
+                  Vue.prototype.isVip= window.sessionStorage.getItem('isVip');
                   resovle(res.content.openId);
                   // alert('135 ' + local + '?appid=' + appid+ '&openid=' + res.msg);
                 }else{
@@ -183,7 +194,8 @@ export default {
             }
           }else{
             window.sessionStorage.setItem('openid', openid);
-             Vue.prototype.isVip=isVip;
+            let vip=window.sessionStorage.getItem('isVip');
+            Vue.prototype.isVip=vip;
             // window.location.href = local + '?appid=' + appid+ '&openid=' + openid;
             // alert('149 '+openid);
             resovle(openid);

@@ -435,7 +435,7 @@
 }
 .user_list .add_usericon {
     position: absolute;
-    right: 0.29333rem;
+    right: 0.49333rem;
     top: -9vw;
     z-index: 100;
 }
